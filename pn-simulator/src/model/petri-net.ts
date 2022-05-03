@@ -17,4 +17,4 @@ interface PetriNet {
 }
 
 
-let es: FlowRelation<Place, Transition> = {place: {name: "eshi"}, transition: {name: "eshu"}}
+const es: FlowRelation<Place, Transition> = {place: {name: "eshi"}, transition: {name: "eshu"}}
