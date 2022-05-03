@@ -1,17 +1,17 @@
-interface Place {
+export interface Place {
     name: string;
 }
 
-interface Transition {
+export interface Transition {
     name: string;
 }
 
-interface FlowRelation<Place, Transition> {
+export interface FlowRelation<Place, Transition> {
     place: Place;
     transition: Transition;
 }
 
-interface PetriNet {
+export interface PetriNet {
     places: Set<string>;
     transitions: Set<Transition>;
 }
