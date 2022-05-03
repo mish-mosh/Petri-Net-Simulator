@@ -1,20 +1,53 @@
-export interface Place {
-    name: string;
+import {Node} from "v-network-graph/lib/common/types";
+
+abstract class VNetSerializable {
+    public abstract toVNetGraph(): string
 }
 
-export interface Transition {
-    name: string;
+interface VNetGraphDisplayable extends Node {
+    shape: string
+}
+class Place implements VNetGraphDisplayable {
+    name: string
+    shape: string
+
+    constructor(name: string) {
+        this.name = name
+        this.shape = "circle"
+    }
 }
 
-export interface FlowRelation<Place, Transition> {
+class Transition implements VNetGraphDisplayable {
+    name: string
+    shape: string
+
+    constructor(name: string) {
+        this.name = name;
+        this.shape = "rec"
+    }
+}
+
+export declare type Places = Record<string, Place>;
+export declare type Transitions = Record<string, Transition>;
+
+
+class FlowRelation<Place, Transition> {
     place: Place;
     transition: Transition;
+
+    constructor(place: Place, transition: Transition) {
+        this.place = place;
+        this.transition = transition
+    }
 }
 
-export interface PetriNet {
-    places: Set<string>;
-    transitions: Set<Transition>;
+// class PetriNet {
+//     places: Set<string>;
+//     transitions: Set<Transition>;
+// }
+
+export {
+    Place,
+    Transition,
 }
-
-
-const es: FlowRelation<Place, Transition> = {place: {name: "eshi"}, transition: {name: "eshu"}}
+// const es: FlowRelation<Place, Transition> = {place: {name: "eshi"}, transition: {name: "eshu"}}
