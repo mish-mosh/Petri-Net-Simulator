@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, Edges, Layers, Layouts, VNetworkGraph} from "v-network-graph";
-import {Place, Places, Transition} from "@/model/petri-net";
+import {defineConfigs, Edge, Edges, Layers, Layouts, Nodes, VNetworkGraph} from "v-network-graph";
+import {Place, Transition} from "@/model/petri-net";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
 
@@ -14,10 +14,10 @@ const configs = reactive(
     })
 )
 
-const nodes: Places = {
-  node1: new Place("P1"),
-  node2: new Transition("T1", true),
-  node3: new Place("P2"),
+const nodes: Nodes = {
+  node1: new Place("P1", true),
+  node2: new Transition("T1"),
+  node3: new Place("P2", false),
 }
 
 const edges: Edges = {
@@ -37,10 +37,10 @@ const layouts: Layouts = ref({
   },
 })
 
-function getTransitionPositions(): NodePositions {
+function getPlacePositions(): NodePositions {
   return Object.keys(layouts.value.nodes
   ).filter((nodeID) => {
-    return nodes[nodeID] instanceof Transition && nodes[nodeID].hasToken
+    return nodes[nodeID] instanceof Place && nodes[nodeID].hasToken
   }).reduce((pos, nodeID) => {
     return Object.assign(pos, {[nodeID]: layouts.value.nodes[nodeID]})
   }, {})
@@ -58,7 +58,7 @@ function getTransitionPositions(): NodePositions {
   >
     <template #badge="{scale}">
       <circle
-          v-for="(pos, node) in getTransitionPositions()"
+          v-for="(pos, node) in getPlacePositions()"
           :key="node"
           :cx="pos.x + scale"
           :cy="pos.y - scale"
