@@ -1,8 +1,22 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, Edges, Layers, Layouts, Nodes, VNetworkGraph} from "v-network-graph";
+import {defineConfigs, Edge, Edges, Layers, Nodes, VNetworkGraph} from "v-network-graph";
 import {Place, Transition} from "@/model/petri-net";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
+import data from "@/data/ENS";
+
+// Initial data
+
+const nodes: Nodes = reactive({...data.nodes})
+const edges: Edges = reactive({...data.edges})
+// wrap with ref() for immediate response to value changes
+const layouts = ref(data.layouts)
+
+// Additional layers
+const layers: Layers = {
+  // The token display layer
+  token: "nodes",
+}
 
 const configs = reactive(
     defineConfigs<Place | Transition, Edge>({
@@ -14,34 +28,13 @@ const configs = reactive(
     })
 )
 
-const nodes: Nodes = {
-  node1: new Place("P1", true),
-  node2: new Transition("T1"),
-  node3: new Place("P2", false),
-}
 
-const edges: Edges = {
-  edge1: {source: "node1", target: "node2"},
-  edge2: {source: "node2", target: "node3"},
-}
-
-const layers: Layers = {
-  // {layername}: {position}
-  badge: "nodes",
-}
-const layouts: Layouts = ref({
-  nodes: {
-    node1: {x: 0, y: 0},
-    node2: {x: 80, y: 80},
-    node3: {x: 160, y: 0},
-  },
-})
-
-function getPlacePositions(): NodePositions {
+function getMarkedPlacePositions(): NodePositions {
+  // Get the Positions of Places with token
   return Object.keys(layouts.value.nodes
-  ).filter((nodeID) => {
+  ).filter((nodeID: string) => {
     return nodes[nodeID] instanceof Place && nodes[nodeID].hasToken
-  }).reduce((pos, nodeID) => {
+  }).reduce((pos: NodePositions, nodeID: string) => {
     return Object.assign(pos, {[nodeID]: layouts.value.nodes[nodeID]})
   }, {})
 }
@@ -56,12 +49,12 @@ function getPlacePositions(): NodePositions {
       :layers="layers"
       :layouts="layouts"
   >
-    <template #badge="{scale}">
+    <template #token="{scale}">
       <circle
-          v-for="(pos, node) in getPlacePositions()"
+          v-for="(pos, node) in getMarkedPlacePositions()"
           :key="node"
-          :cx="pos.x + scale"
-          :cy="pos.y - scale"
+          :cx="pos.x"
+          :cy="pos.y"
           :r="5 * scale"
           :fill="'#00cc00'"
           style="pointer-events: none"

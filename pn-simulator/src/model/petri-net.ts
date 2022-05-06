@@ -1,9 +1,5 @@
 import {Node} from "v-network-graph/lib/common/types";
 
-abstract class VNetSerializable {
-    public abstract toVNetGraph(): string
-}
-
 interface VNetGraphDisplayable extends Node {
     shape: string
 }
@@ -30,8 +26,8 @@ class Transition implements VNetGraphDisplayable {
     }
 }
 
-export declare type Places = Record<string, Place>;
-export declare type Transitions = Record<string, Transition>;
+export type Places = Record<string, Place>;
+export type Transitions = Record<string, Transition>;
 
 
 class FlowRelation<Place, Transition> {
@@ -53,4 +49,3 @@ export {
     Place,
     Transition,
 }
-// const es: FlowRelation<Place, Transition> = {place: {name: "eshi"}, transition: {name: "eshu"}}
