@@ -38,13 +38,12 @@ const layouts: Layouts = ref({
 })
 
 function getTransitionPositions(): NodePositions {
-  const positions: NodePositions = Object.keys(layouts.value.nodes
+  return Object.keys(layouts.value.nodes
   ).filter((nodeID) => {
     return nodes[nodeID] instanceof Transition && nodes[nodeID].hasToken
   }).reduce((pos, nodeID) => {
     return Object.assign(pos, {[nodeID]: layouts.value.nodes[nodeID]})
   }, {})
-  return positions
 }
 </script>
 
