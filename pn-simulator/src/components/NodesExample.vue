@@ -49,13 +49,13 @@ function getMarkedPlacePositions(): NodePositions {
       :layers="layers"
       :layouts="layouts"
   >
-    <template #token="{scale}">
+    <template #token>
       <circle
           v-for="(pos, node) in getMarkedPlacePositions()"
           :key="node"
           :cx="pos.x"
           :cy="pos.y"
-          :r="5 * scale"
+          :r="5"
           :fill="'#00cc00'"
           style="pointer-events: none"
       />
