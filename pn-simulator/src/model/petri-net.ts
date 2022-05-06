@@ -7,6 +7,7 @@ abstract class VNetSerializable {
 interface VNetGraphDisplayable extends Node {
     shape: string
 }
+
 class Place implements VNetGraphDisplayable {
     name: string
     shape: string
@@ -20,9 +21,11 @@ class Place implements VNetGraphDisplayable {
 class Transition implements VNetGraphDisplayable {
     name: string
     shape: string
+    hasToken: boolean;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor(name: string, hasToken: boolean) {
+        this.name = name
+        this.hasToken = hasToken
         this.shape = "rec"
     }
 }
