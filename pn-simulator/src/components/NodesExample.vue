@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, Edges, Layers, Nodes, VNetworkGraph} from "v-network-graph";
-import {Place, Transition} from "@/model/petri-net";
+import {defineConfigs, Edge, Edges, Layers, VNetworkGraph} from "v-network-graph";
+import {Place, Places, Transition, Transitions} from "@/model/petri-net";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
 import data from "@/data/ENS";
 
 // Initial data
 
-const nodes: Nodes = reactive({...data.nodes})
+const nodes: Places | Transitions = reactive({...data.nodes})
 const edges: Edges = reactive({...data.edges})
+const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 // wrap with ref() for immediate response to value changes
 const layouts = ref(data.layouts)
 
@@ -21,26 +22,60 @@ const layers: Layers = {
 const configs = reactive(
     defineConfigs<Place | Transition, Edge>({
       node: {
+        selectable: true,
         normal: {
-          type: node => node.shape
+          type: (node: Place | Transition) => node.shape,
+          color: "#ffffff",
+          strokeWidth: 2,
+          strokeColor: "#000000"
+        },
+        hover: {
+          color: "#2aadec"
+        },
+      },
+      edge: {
+        selectable: true,
+        normal: {
+          color: "#000000"
+        },
+        hover: {
+          color: "#2aadec"
+        },
+      },
+      view: {
+        grid: {
+          visible: true
         }
       }
     })
 )
 
+function addNode() {
+  const nodeId = `node${nextNodeIndex.value}`
+  const name = `P${nextNodeIndex.value}`
+  nodes[nodeId] = new Place(name)
+  nextNodeIndex.value++
+}
 
 function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
   return Object.keys(layouts.value.nodes
-  ).filter((nodeID: string) => {
-    return nodes[nodeID] instanceof Place && nodes[nodeID].hasToken
-  }).reduce((pos: NodePositions, nodeID: string) => {
-    return Object.assign(pos, {[nodeID]: layouts.value.nodes[nodeID]})
+  ).filter((nodeId: string) => {
+    return nodes[nodeId] instanceof Place && nodes[nodeId].hasToken
+  }).reduce((pos: NodePositions, nodeId: string) => {
+    return Object.assign(pos, {[nodeId]: layouts.value.nodes[nodeId]})
   }, {})
 }
+
 </script>
 
 <template>
+  <div class="demo-control-panel">
+    <div>
+      <label>Node:</label>
+      <button @click="addNode">add</button>
+    </div>
+  </div>
 
   <v-network-graph
       :nodes="nodes"
@@ -49,14 +84,14 @@ function getMarkedPlacePositions(): NodePositions {
       :layers="layers"
       :layouts="layouts"
   >
-    <template #token>
+    <template #token="{scale}">
       <circle
           v-for="(pos, node) in getMarkedPlacePositions()"
           :key="node"
           :cx="pos.x"
           :cy="pos.y"
-          :r="5"
-          :fill="'#00cc00'"
+          :r="5 * scale"
+          :fill="'#000000'"
           style="pointer-events: none"
       />
     </template>

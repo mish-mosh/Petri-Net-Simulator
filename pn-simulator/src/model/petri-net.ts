@@ -1,22 +1,22 @@
 import {Node} from "v-network-graph/lib/common/types";
 
-interface VNetGraphDisplayable extends Node {
+interface BaseNode extends Node {
     shape: string
 }
 
-class Place implements VNetGraphDisplayable {
+class Place implements BaseNode {
     name: string
     shape: string
     hasToken: boolean
 
-    constructor(name: string, hasToken: boolean) {
+    constructor(name: string, hasToken: boolean = false) {
         this.name = name
         this.hasToken = hasToken
         this.shape = "circle"
     }
 }
 
-class Transition implements VNetGraphDisplayable {
+class Transition implements BaseNode {
     name: string
     shape: string
 
@@ -26,8 +26,8 @@ class Transition implements VNetGraphDisplayable {
     }
 }
 
-export type Places = Record<string, Place>;
-export type Transitions = Record<string, Transition>;
+type Places = Record<string, Place>;
+type Transitions = Record<string, Transition>;
 
 
 class FlowRelation<Place, Transition> {
@@ -46,6 +46,9 @@ class FlowRelation<Place, Transition> {
 // }
 
 export {
+    BaseNode,
     Place,
     Transition,
+    Places,
+    Transitions
 }
