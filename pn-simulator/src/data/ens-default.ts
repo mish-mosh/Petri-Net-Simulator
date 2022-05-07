@@ -1,5 +1,5 @@
 import {Edges, Layouts} from "v-network-graph";
-import {Place, Places, Transition, Transitions} from "@/model/petri-net";
+import {Place, Places, Transition, Transitions} from "@/types";
 
 const nodes: Places | Transitions = {
     node1: new Place("P1", true),

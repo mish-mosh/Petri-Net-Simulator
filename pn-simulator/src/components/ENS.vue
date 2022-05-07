@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {defineConfigs, Edge, Edges, Layers, VNetworkGraph} from "v-network-graph";
-import {Place, Places, Transition, Transitions} from "@/model/petri-net";
+import {Place, Places, Transition, Transitions} from "@/types";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
-import data from "@/data/ENS";
+import data from "@/data/ens-default";
 
 // Initial data
 
