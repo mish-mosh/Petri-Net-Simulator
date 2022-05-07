@@ -1,28 +1,30 @@
 import {Node} from "v-network-graph/lib/common/types";
 
-interface BaseNode extends Node {
+abstract class BaseNode implements Node {
     shape: string
-}
 
-class Place implements BaseNode {
-    name: string
-    shape: string
-    hasToken: boolean
-
-    constructor(name: string, hasToken: boolean = false) {
-        this.name = name
-        this.hasToken = hasToken
-        this.shape = "circle"
+    protected constructor(shape: string) {
+        this.shape = shape
     }
 }
 
-class Transition implements BaseNode {
+class Place extends BaseNode {
     name: string
-    shape: string
+    hasToken: boolean
+
+    constructor(name: string, hasToken: boolean = false) {
+        super("circle")
+        this.name = name
+        this.hasToken = hasToken
+    }
+}
+
+class Transition extends BaseNode {
+    name: string
 
     constructor(name: string) {
+        super("rec")
         this.name = name
-        this.shape = "rec"
     }
 }
 
