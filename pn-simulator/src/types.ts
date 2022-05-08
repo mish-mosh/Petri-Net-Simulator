@@ -34,17 +34,17 @@ type Transitions = Record<string, Transition>;
 class FlowRelation implements Edge {
     source: string;
     target: string;
-    sourceInstance: BaseNode;
-    targetInstance: BaseNode;
 
-    constructor(sourceInstance: BaseNode, targetInstance: BaseNode) {
-        this.sourceInstance = sourceInstance
-        this.targetInstance = targetInstance
-        this.source = this.sourceInstance.name
-        this.target = this.targetInstance.name
+    [x: string]: any;
+
+    constructor(source: string, target: string) {
+        this.source = source
+        this.target = target
     }
 
 }
+
+type FlowRelations = Record<string, FlowRelation>
 
 // class PetriNet {
 //     places: Set<string>;
@@ -56,5 +56,7 @@ export {
     Place,
     Transition,
     Places,
-    Transitions
+    Transitions,
+    FlowRelation,
+    FlowRelations
 }

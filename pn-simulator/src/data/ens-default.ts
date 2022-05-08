@@ -1,5 +1,5 @@
-import {Edges, Layouts} from "v-network-graph";
-import {Place, Places, Transition, Transitions} from "@/types";
+import {Layouts} from "v-network-graph";
+import {FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
 
 const nodes: Places | Transitions = {
     place1: new Place("p1", true),
@@ -7,9 +7,9 @@ const nodes: Places | Transitions = {
     place2: new Place("p2", false),
 }
 
-const edges: Edges = {
-    edge1: {source: "place1", target: "transition1"},
-    edge2: {source: "transition1", target: "place2"},
+const flowRelations: FlowRelations = {
+    flowRelation1: new FlowRelation("place1", "transition1",),
+    // flowRelation2: new FlowRelation("transition1", "place2"),
 }
 
 const layouts: Layouts = {
@@ -18,6 +18,6 @@ const layouts: Layouts = {
 
 export default {
     nodes,
-    edges,
+    flowRelations,
     layouts
 }

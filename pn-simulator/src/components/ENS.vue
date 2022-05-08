@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, Edges, Layers, VNetworkGraph} from "v-network-graph";
-import {Place, Places, Transition, Transitions} from "@/types";
+import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
+import {FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
 import data from "@/data/ens-default";
@@ -8,9 +8,14 @@ import data from "@/data/ens-default";
 // Initial data
 
 const nodes: Places | Transitions = reactive({...data.nodes})
-const edges: Edges = reactive({...data.edges})
-const nextNodeIndex = ref(Object.keys(nodes).length + 1)
+const flowRelations: FlowRelations = reactive({...data.flowRelations})
 const layouts = reactive(data.layouts)
+
+// Additional states
+const nextNodeIndex = ref(Object.keys(nodes).length + 1)
+const nextFlowRelationIndex = ref(Object.keys(flowRelations).length + 1)
+const selectedNodes = ref<string[]>([])
+
 
 // Additional layers
 const layers: Layers = {
@@ -18,6 +23,8 @@ const layers: Layers = {
   token: "nodes",
 }
 
+
+// Configs
 const configs = reactive(
     defineConfigs<Place | Transition, Edge>({
       node: {
@@ -54,30 +61,38 @@ const configs = reactive(
     })
 )
 
-function addNode(nodeKey: string, node: Place | Transition): void {
-  nodes[nodeKey] = node
+function addNode(nodeId: string, node: Place | Transition): void {
+  nodes[nodeId] = node
   nextNodeIndex.value++
 }
 
 function addPlace(): void {
-  const nodeKey = `place${nextNodeIndex.value}`
+  const nodeId = `place${nextNodeIndex.value}`
   const name = `p${nextNodeIndex.value}`
-  addNode(nodeKey, new Place(name))
+  addNode(nodeId, new Place(name))
 }
 
 function addTransition(): void {
-  const nodeKey = `transition${nextNodeIndex.value}`
+  const nodeId = `transition${nextNodeIndex.value}`
   const name = `t${nextNodeIndex.value}`
-  addNode(nodeKey, new Transition(name))
+  addNode(nodeId, new Transition(name))
+}
+
+function addFlowRelation() {
+  if (selectedNodes.value.length !== 2) return
+  const [source, target] = selectedNodes.value
+  const relationId = `flowRelation${nextFlowRelationIndex.value}`
+  flowRelations[relationId] = new FlowRelation(source, target)
+  nextFlowRelationIndex.value++
 }
 
 function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
   return Object.keys(layouts.nodes
-  ).filter((nodeKey: string) => {
-    return nodes[nodeKey] instanceof Place && nodes[nodeKey].hasToken
-  }).reduce((pos: NodePositions, nodeKey: string) => {
-    return Object.assign(pos, {[nodeKey]: layouts.nodes[nodeKey]})
+  ).filter((nodeId: string) => {
+    return nodes[nodeId] instanceof Place && nodes[nodeId].hasToken
+  }).reduce((pos: NodePositions, nodeId: string) => {
+    return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
   }, {})
 }
 
@@ -92,11 +107,16 @@ function getMarkedPlacePositions(): NodePositions {
       <label>Transition:</label>
       <button @click="addTransition">add</button>
     </div>
+    <div>
+      <label>Flow Relation:</label>
+      <button :disabled="selectedNodes.length !== 2" @click="addFlowRelation">add</button>
+    </div>
   </div>
 
   <v-network-graph
+      v-model:selected-nodes="selectedNodes"
       :nodes="nodes"
-      :edges="edges"
+      :edges="flowRelations"
       :configs="configs"
       :layers="layers"
       :layouts="layouts"
