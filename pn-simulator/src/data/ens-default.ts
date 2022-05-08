@@ -2,14 +2,14 @@ import {Edges, Layouts} from "v-network-graph";
 import {Place, Places, Transition, Transitions} from "@/types";
 
 const nodes: Places | Transitions = {
-    node1: new Place("P1", true),
-    node2: new Transition("T1"),
-    node3: new Place("P2", false),
+    place1: new Place("p1", true),
+    transition1: new Transition("t1"),
+    place2: new Place("p2", false),
 }
 
 const edges: Edges = {
-    edge1: {source: "node1", target: "node2"},
-    edge2: {source: "node2", target: "node3"},
+    edge1: {source: "place1", target: "transition1"},
+    edge2: {source: "transition1", target: "place2"},
 }
 
 const layouts: Layouts = {

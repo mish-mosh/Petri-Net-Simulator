@@ -49,20 +49,30 @@ const configs = reactive(
     })
 )
 
-function addNode() {
-  const nodeId = `node${nextNodeIndex.value}`
-  const name = `P${nextNodeIndex.value}`
-  nodes[nodeId] = new Place(name)
+function addNode(nodeKey: string, node: Place | Transition): void {
+  nodes[nodeKey] = node
   nextNodeIndex.value++
+}
+
+function addPlace() {
+  const nodeKey = `place${nextNodeIndex.value}`
+  const name = `p${nextNodeIndex.value}`
+  addNode(nodeKey, new Place(name))
+}
+
+function addTransition() {
+  const nodeKey = `transition${nextNodeIndex.value}`
+  const name = `t${nextNodeIndex.value}`
+  addNode(nodeKey, new Transition(name))
 }
 
 function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
   return Object.keys(layouts.nodes
-  ).filter((nodeId: string) => {
-    return nodes[nodeId] instanceof Place && nodes[nodeId].hasToken
-  }).reduce((pos: NodePositions, nodeId: string) => {
-    return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
+  ).filter((nodeKey: string) => {
+    return nodes[nodeKey] instanceof Place && nodes[nodeKey].hasToken
+  }).reduce((pos: NodePositions, nodeKey: string) => {
+    return Object.assign(pos, {[nodeKey]: layouts.nodes[nodeKey]})
   }, {})
 }
 
@@ -72,8 +82,10 @@ function getMarkedPlacePositions(): NodePositions {
 <template>
   <div class="demo-control-panel">
     <div>
-      <label>Node:</label>
-      <button @click="addNode">add</button>
+      <label>Place:</label>
+      <button @click="addPlace">add</button>
+      <label>Transition:</label>
+      <button @click="addTransition">add</button>
     </div>
   </div>
 
