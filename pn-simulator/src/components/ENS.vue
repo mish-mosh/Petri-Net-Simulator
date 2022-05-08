@@ -10,7 +10,6 @@ import data from "@/data/ens-default";
 const nodes: Places | Transitions = reactive({...data.nodes})
 const edges: Edges = reactive({...data.edges})
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
-// wrap with ref() for immediate response to value changes
 const layouts = reactive(data.layouts)
 
 // Additional layers
