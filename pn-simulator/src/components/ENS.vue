@@ -40,6 +40,11 @@ const configs = reactive(
         hover: {
           color: "#2aadec"
         },
+        marker: {
+          target: {
+            type: "arrow"
+          }
+        }
       },
       view: {
         grid: {
@@ -54,13 +59,13 @@ function addNode(nodeKey: string, node: Place | Transition): void {
   nextNodeIndex.value++
 }
 
-function addPlace() {
+function addPlace(): void {
   const nodeKey = `place${nextNodeIndex.value}`
   const name = `p${nextNodeIndex.value}`
   addNode(nodeKey, new Place(name))
 }
 
-function addTransition() {
+function addTransition(): void {
   const nodeKey = `transition${nextNodeIndex.value}`
   const name = `t${nextNodeIndex.value}`
   addNode(nodeKey, new Transition(name))
