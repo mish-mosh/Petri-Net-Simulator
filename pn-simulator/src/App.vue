@@ -1,14 +1,14 @@
 <template>
-  <NodesExample/>
+  <ENS/>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import NodesExample from "@/components/ENS.vue";
+import ENS from "@/components/ENS.vue";
 
 @Options({
   components: {
-    NodesExample,
+    ENS,
   },
 })
 export default class App extends Vue {}
