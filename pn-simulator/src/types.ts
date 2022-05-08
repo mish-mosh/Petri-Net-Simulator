@@ -1,30 +1,29 @@
 import {Node} from "v-network-graph/lib/common/types";
+import {Edge} from "v-network-graph";
 
 abstract class BaseNode implements Node {
+    name: string
     shape: string
 
-    protected constructor(shape: string) {
+    protected constructor(name: string, shape: string) {
+        this.name = name
         this.shape = shape
     }
 }
 
 class Place extends BaseNode {
-    name: string
     hasToken: boolean
 
     constructor(name: string, hasToken: boolean = false) {
-        super("circle")
-        this.name = name
+        super(name, "circle")
         this.hasToken = hasToken
     }
 }
 
 class Transition extends BaseNode {
-    name: string
 
     constructor(name: string) {
-        super("rec")
-        this.name = name
+        super(name, "rec");
     }
 }
 
@@ -32,14 +31,19 @@ type Places = Record<string, Place>;
 type Transitions = Record<string, Transition>;
 
 
-class FlowRelation<Place, Transition> {
-    place: Place;
-    transition: Transition;
+class FlowRelation implements Edge {
+    source: string;
+    target: string;
+    sourceInstance: BaseNode;
+    targetInstance: BaseNode;
 
-    constructor(place: Place, transition: Transition) {
-        this.place = place;
-        this.transition = transition
+    constructor(sourceInstance: BaseNode, targetInstance: BaseNode) {
+        this.sourceInstance = sourceInstance
+        this.targetInstance = targetInstance
+        this.source = this.sourceInstance.name
+        this.target = this.targetInstance.name
     }
+
 }
 
 // class PetriNet {
