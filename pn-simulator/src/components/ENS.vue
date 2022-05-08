@@ -11,7 +11,7 @@ const nodes: Places | Transitions = reactive({...data.nodes})
 const edges: Edges = reactive({...data.edges})
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 // wrap with ref() for immediate response to value changes
-const layouts = ref(data.layouts)
+const layouts = reactive(data.layouts)
 
 // Additional layers
 const layers: Layers = {
@@ -59,13 +59,14 @@ function addNode() {
 
 function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
-  return Object.keys(layouts.value.nodes
+  return Object.keys(layouts.nodes
   ).filter((nodeId: string) => {
     return nodes[nodeId] instanceof Place && nodes[nodeId].hasToken
   }).reduce((pos: NodePositions, nodeId: string) => {
-    return Object.assign(pos, {[nodeId]: layouts.value.nodes[nodeId]})
+    return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
   }, {})
 }
+
 
 </script>
 
