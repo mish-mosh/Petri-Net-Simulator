@@ -54,6 +54,7 @@ const configs = reactive(
         }
       },
       view: {
+        autoPanAndZoomOnLoad: "fit-content",
         grid: {
           visible: true
         }
