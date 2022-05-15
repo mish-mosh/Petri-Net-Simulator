@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
-import {FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
+import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types";
 import {reactive, ref} from "vue";
 import {NodePositions} from "v-network-graph/lib/common/types";
 import data from "@/data/ens-default";
 
 // Initial data
 
-const nodes: Places | Transitions = reactive({...data.nodes})
+const nodes: BaseNodes = reactive({...data.nodes})
 const flowRelations: FlowRelations = reactive({...data.flowRelations})
 const layouts = reactive(data.layouts)
 
@@ -91,7 +91,7 @@ function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
   return Object.keys(layouts.nodes
   ).filter((nodeId: string) => {
-    return nodes[nodeId] instanceof Place && nodes[nodeId].hasToken
+    return nodes[nodeId] instanceof Place && (nodes[nodeId] as Place).hasToken
   }).reduce((pos: NodePositions, nodeId: string) => {
     return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
   }, {})

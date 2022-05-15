@@ -27,6 +27,7 @@ class Transition extends BaseNode {
     }
 }
 
+type BaseNodes = Record<string, BaseNode>
 type Places = Record<string, Place>;
 type Transitions = Record<string, Transition>;
 
@@ -57,6 +58,7 @@ export {
     Transition,
     Places,
     Transitions,
+    BaseNodes,
     FlowRelation,
     FlowRelations
 }
