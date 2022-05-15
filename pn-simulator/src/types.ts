@@ -1,11 +1,12 @@
 import {Node} from "v-network-graph/lib/common/types";
 import {Edge} from "v-network-graph";
+import {ShapeType} from "v-network-graph/lib/common/configs";
 
 abstract class BaseNode implements Node {
     name: string
-    shape: string
+    shape: ShapeType
 
-    protected constructor(name: string, shape: string) {
+    protected constructor(name: string, shape: ShapeType) {
         this.name = name
         this.shape = shape
     }
@@ -23,7 +24,7 @@ class Place extends BaseNode {
 class Transition extends BaseNode {
 
     constructor(name: string) {
-        super(name, "rec");
+        super(name, "rect");
     }
 }
 
