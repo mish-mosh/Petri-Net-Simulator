@@ -67,6 +67,12 @@ function addNode(nodeId: string, node: Place | Transition): void {
   nextNodeIndex.value++
 }
 
+function removeSelectedNodes(): void {
+  for (const nodeID of selectedNodes.value) {
+    delete nodes[nodeID]
+  }
+}
+
 function addPlace(): void {
   const nodeId = `place${nextNodeIndex.value}`
   const name = `p${nextNodeIndex.value}`
@@ -103,10 +109,10 @@ function getMarkedPlacePositions(): NodePositions {
 <template>
   <div class="demo-control-panel">
     <div>
-      <label>Place:</label>
-      <button @click="addPlace">add</button>
-      <label>Transition:</label>
-      <button @click="addTransition">add</button>
+      <label>Places & Transitions:</label>
+      <button @click="addPlace">add place</button>
+      <button @click="addTransition">add transition</button>
+      <button @click="removeSelectedNodes">remove selected</button>
     </div>
     <div>
       <label>Flow Relation:</label>
