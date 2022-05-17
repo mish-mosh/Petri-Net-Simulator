@@ -15,7 +15,7 @@ const layouts = reactive(data.layouts)
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextFlowRelationIndex = ref(Object.keys(flowRelations).length + 1)
 const selectedNodes = ref<string[]>([])
-
+const selectedFlowRelations = ref<string[]>([])
 
 // Additional layers
 const layers: Layers = {
@@ -93,6 +93,12 @@ function addFlowRelation() {
   nextFlowRelationIndex.value++
 }
 
+function removeSelectedFlowRelations() {
+  for (const flowRelationId of selectedFlowRelations.value) {
+    delete flowRelations[flowRelationId]
+  }
+}
+
 function getMarkedPlacePositions(): NodePositions {
   // Get the Positions of Places with token
   return Object.keys(layouts.nodes
@@ -117,11 +123,13 @@ function getMarkedPlacePositions(): NodePositions {
     <div>
       <label>Flow Relation:</label>
       <button :disabled="selectedNodes.length !== 2" @click="addFlowRelation">add</button>
+      <button @click="removeSelectedFlowRelations">remove selected</button>
     </div>
   </div>
 
   <v-network-graph
       v-model:selected-nodes="selectedNodes"
+      v-model:selected-edges="selectedFlowRelations"
       :nodes="nodes"
       :edges="flowRelations"
       :configs="configs"
