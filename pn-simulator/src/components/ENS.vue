@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
-import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types";
-import {reactive, ref} from "vue";
-import {NodePositions} from "v-network-graph/lib/common/types";
-import data from "@/data/ens-default";
+import {Place, Transition} from "@/types";
+import {reactive} from "vue";
+import * as repo from "@/repository"
 
-// Initial data
-
-const nodes: BaseNodes = reactive({...data.nodes})
-const flowRelations: FlowRelations = reactive({...data.flowRelations})
-const layouts = reactive(data.layouts)
-
-// Additional states
-const nextNodeIndex = ref(Object.keys(nodes).length + 1)
-const nextFlowRelationIndex = ref(Object.keys(flowRelations).length + 1)
-const selectedNodes = ref<string[]>([])
-const selectedFlowRelations = ref<string[]>([])
 
 // Additional layers
 const layers: Layers = {
@@ -62,53 +50,6 @@ const configs = reactive(
     })
 )
 
-function addNode(nodeId: string, node: Place | Transition): void {
-  nodes[nodeId] = node
-  nextNodeIndex.value++
-}
-
-function removeSelectedNodes(): void {
-  for (const nodeID of selectedNodes.value) {
-    delete nodes[nodeID]
-  }
-}
-
-function addPlace(): void {
-  const nodeId = `place${nextNodeIndex.value}`
-  const name = `p${nextNodeIndex.value}`
-  addNode(nodeId, new Place(name))
-}
-
-function addTransition(): void {
-  const nodeId = `transition${nextNodeIndex.value}`
-  const name = `t${nextNodeIndex.value}`
-  addNode(nodeId, new Transition(name))
-}
-
-function addFlowRelation() {
-  if (selectedNodes.value.length !== 2) return
-  const [source, target] = selectedNodes.value
-  const relationId = `flowRelation${nextFlowRelationIndex.value}`
-  flowRelations[relationId] = new FlowRelation(source, target)
-  nextFlowRelationIndex.value++
-}
-
-function removeSelectedFlowRelations() {
-  for (const flowRelationId of selectedFlowRelations.value) {
-    delete flowRelations[flowRelationId]
-  }
-}
-
-function getMarkedPlacePositions(): NodePositions {
-  // Get the Positions of Places with token
-  return Object.keys(layouts.nodes
-  ).filter((nodeId: string) => {
-    return nodes[nodeId] instanceof Place && (nodes[nodeId] as Place).hasToken
-  }).reduce((pos: NodePositions, nodeId: string) => {
-    return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
-  }, {})
-}
-
 
 </script>
 
@@ -122,19 +63,22 @@ function getMarkedPlacePositions(): NodePositions {
           </label>
         </el-col>
         <el-col :span="8">
-          <el-button type="primary" plain @click="addPlace">Add place</el-button>
-          <el-button type="primary" plain @click="addTransition">Add transition</el-button>
-          <el-button type="danger" plain :disabled="selectedNodes.length === 0" @click="removeSelectedNodes">Remove
+          <el-button type="primary" plain @click="repo.addPlace">Add place</el-button>
+          <el-button type="primary" plain @click="repo.addTransition">Add transition</el-button>
+          <el-button type="danger" plain :disabled="repo.selectedNodes.value.length === 0"
+                     @click="repo.removeSelectedNodes">Remove
           </el-button>
         </el-col>
         <el-col :span="4">
           <label>Flow Relations:</label>
         </el-col>
         <el-col :span="8">
-          <el-button type="primary" plain :disabled="selectedNodes.length !== 2" @click="addFlowRelation">Add
+          <el-button type="primary" plain :disabled="repo.selectedNodes.value.length !== 2"
+                     @click="repo.addFlowRelation">
+            Add
           </el-button>
-          <el-button type="danger" plain :disabled="selectedFlowRelations.length === 0"
-                     @click="removeSelectedFlowRelations">
+          <el-button type="danger" plain :disabled="repo.selectedFlowRelations.value.length === 0"
+                     @click="repo.removeSelectedFlowRelations">
             Remove
           </el-button>
         </el-col>
@@ -142,17 +86,17 @@ function getMarkedPlacePositions(): NodePositions {
     </template>
 
     <v-network-graph
-        v-model:selected-nodes="selectedNodes"
-        v-model:selected-edges="selectedFlowRelations"
-        :nodes="nodes"
-        :edges="flowRelations"
+        v-model:selected-nodes="repo.selectedNodes.value"
+        v-model:selected-edges="repo.selectedFlowRelations.value"
+        :nodes="repo.nodes"
+        :edges="repo.flowRelations"
         :configs="configs"
         :layers="layers"
-        :layouts="layouts"
+        :layouts="repo.layouts"
     >
       <template #token="{scale}">
         <circle
-            v-for="(pos, node) in getMarkedPlacePositions()"
+            v-for="(pos, node) in repo.getMarkedPlacePositions()"
             :key="node"
             :cx="pos.x"
             :cy="pos.y"
