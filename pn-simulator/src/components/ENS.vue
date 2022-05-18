@@ -2,7 +2,7 @@
 import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
 import {Place, Transition} from "@/types";
 import {reactive} from "vue";
-import * as repo from "@/repository"
+import repo from "@/repository"
 
 
 // Additional layers

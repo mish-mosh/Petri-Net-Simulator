@@ -61,7 +61,7 @@ function getMarkedPlacePositions(): NodePositions {
     }, {})
 }
 
-export {
+export default {
     nodes,
     flowRelations,
     layouts,
