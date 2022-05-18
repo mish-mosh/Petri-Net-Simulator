@@ -118,12 +118,13 @@ function getMarkedPlacePositions(): NodePositions {
       <label>Places & Transitions:</label>
       <button @click="addPlace">add place</button>
       <button @click="addTransition">add transition</button>
-      <button @click="removeSelectedNodes">remove selected</button>
+      <button :disabled="selectedNodes.length === 0" @click="removeSelectedNodes">remove selected</button>
     </div>
     <div>
       <label>Flow Relation:</label>
       <button :disabled="selectedNodes.length !== 2" @click="addFlowRelation">add</button>
-      <button @click="removeSelectedFlowRelations">remove selected</button>
+      <button :disabled="selectedFlowRelations.length === 0" @click="removeSelectedFlowRelations">remove selected
+      </button>
     </div>
   </div>
 
