@@ -113,40 +113,59 @@ function getMarkedPlacePositions(): NodePositions {
 </script>
 
 <template>
-  <div class="demo-control-panel">
-    <div>
-      <label>Places & Transitions:</label>
-      <button @click="addPlace">add place</button>
-      <button @click="addTransition">add transition</button>
-      <button :disabled="selectedNodes.length === 0" @click="removeSelectedNodes">remove selected</button>
-    </div>
-    <div>
-      <label>Flow Relation:</label>
-      <button :disabled="selectedNodes.length !== 2" @click="addFlowRelation">add</button>
-      <button :disabled="selectedFlowRelations.length === 0" @click="removeSelectedFlowRelations">remove selected
-      </button>
-    </div>
-  </div>
-
-  <v-network-graph
-      v-model:selected-nodes="selectedNodes"
-      v-model:selected-edges="selectedFlowRelations"
-      :nodes="nodes"
-      :edges="flowRelations"
-      :configs="configs"
-      :layers="layers"
-      :layouts="layouts"
-  >
-    <template #token="{scale}">
-      <circle
-          v-for="(pos, node) in getMarkedPlacePositions()"
-          :key="node"
-          :cx="pos.x"
-          :cy="pos.y"
-          :r="5 * scale"
-          :fill="'#000000'"
-          style="pointer-events: none"
-      />
+  <el-card>
+    <template #header>
+      <el-row>
+        <el-col :span="4">
+          <label>
+            Places & Transitions:
+          </label>
+        </el-col>
+        <el-col :span="8">
+          <el-button type="primary" plain @click="addPlace">Add place</el-button>
+          <el-button type="primary" plain @click="addTransition">Add transition</el-button>
+          <el-button type="danger" plain :disabled="selectedNodes.length === 0" @click="removeSelectedNodes">Remove
+          </el-button>
+        </el-col>
+        <el-col :span="4">
+          <label>Flow Relations:</label>
+        </el-col>
+        <el-col :span="8">
+          <el-button type="primary" plain :disabled="selectedNodes.length !== 2" @click="addFlowRelation">Add
+          </el-button>
+          <el-button type="danger" plain :disabled="selectedFlowRelations.length === 0"
+                     @click="removeSelectedFlowRelations">
+            Remove
+          </el-button>
+        </el-col>
+      </el-row>
     </template>
-  </v-network-graph>
+
+    <v-network-graph
+        v-model:selected-nodes="selectedNodes"
+        v-model:selected-edges="selectedFlowRelations"
+        :nodes="nodes"
+        :edges="flowRelations"
+        :configs="configs"
+        :layers="layers"
+        :layouts="layouts"
+    >
+      <template #token="{scale}">
+        <circle
+            v-for="(pos, node) in getMarkedPlacePositions()"
+            :key="node"
+            :cx="pos.x"
+            :cy="pos.y"
+            :r="5 * scale"
+            :fill="'#000000'"
+            style="pointer-events: none"
+        />
+      </template>
+    </v-network-graph>
+  </el-card>
 </template>
+<style lang="css">
+.v-canvas {
+  width: 100%;
+}
+</style>

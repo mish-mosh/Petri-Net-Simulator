@@ -1,9 +1,16 @@
 <template>
-  <ENS/>
+  <el-container>
+    <el-header height="50px">
+      Petri-Net Simulator
+    </el-header>
+    <el-main>
+      <ENS/>
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import {Options, Vue} from 'vue-class-component';
 import ENS from "@/components/ENS.vue";
 
 @Options({
@@ -11,7 +18,8 @@ import ENS from "@/components/ENS.vue";
     ENS,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+}
 </script>
 
 <style>
@@ -19,8 +27,6 @@ export default class App extends Vue {}
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  vertical-align: middle;
 }
 </style>
