@@ -10,12 +10,12 @@ const {
   layouts,
   selectedNodes,
   selectedFlowRelations,
+  markedPlacePositions,
   addPlace,
   removeSelectedNodes,
   addTransition,
   addFlowRelation,
   removeSelectedFlowRelations,
-  getMarkedPlacePositions,
 } = useENS()
 
 // Additional layers
@@ -108,7 +108,7 @@ const configs = reactive(
     >
       <template #token="{scale}">
         <circle
-            v-for="(pos, node) in getMarkedPlacePositions()"
+            v-for="(pos, node) in markedPlacePositions"
             :key="node"
             :cx="pos.x"
             :cy="pos.y"

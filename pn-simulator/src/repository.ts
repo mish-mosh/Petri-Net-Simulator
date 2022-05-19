@@ -68,11 +68,11 @@ export function useENS() {
         layouts: computed(() => layouts),
         selectedNodes: computed(() => selectedNodes),
         selectedFlowRelations: computed(() => selectedFlowRelations),
+        markedPlacePositions: computed(() => getMarkedPlacePositions()),
         addPlace,
         addTransition,
         removeSelectedNodes,
         addFlowRelation,
         removeSelectedFlowRelations,
-        getMarkedPlacePositions,
     }
 }
