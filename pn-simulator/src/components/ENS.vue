@@ -69,7 +69,7 @@ const configs = reactive(
   <el-card>
     <template #header>
       <el-row>
-        <el-col :span="8">
+        <el-col :span="9">
           <label>
             Places & Transitions:
           </label>
@@ -79,7 +79,7 @@ const configs = reactive(
                      @click="removeSelectedNodes">Remove
           </el-button>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <label>
             Flow Relations:
           </label>
