@@ -61,12 +61,26 @@ function getMarkedPlacePositions(): NodePositions {
     }, {})
 }
 
+function getSelectedPlaces(): string[] {
+    return selectedNodes.value.filter((nodeId: string) => {
+        return nodes[nodeId] instanceof Place
+    })
+}
+
+function toggleTokenForSelectedPlaces(): void {
+    for (const placeId of getSelectedPlaces()) {
+        (nodes[placeId] as Place).hasToken = !(nodes[placeId] as Place).hasToken
+    }
+}
+
+
 export function useENS() {
     return {
         nodes: computed(() => nodes),
         flowRelations: computed(() => flowRelations),
         layouts: computed(() => layouts),
         selectedNodes: computed(() => selectedNodes),
+        selectedPlaces: computed(() => getSelectedPlaces()),
         selectedFlowRelations: computed(() => selectedFlowRelations),
         markedPlacePositions: computed(() => getMarkedPlacePositions()),
         addPlace,
@@ -74,5 +88,6 @@ export function useENS() {
         removeSelectedNodes,
         addFlowRelation,
         removeSelectedFlowRelations,
+        toggleTokenForSelectedPlaces,
     }
 }

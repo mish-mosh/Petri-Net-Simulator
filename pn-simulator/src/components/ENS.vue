@@ -9,6 +9,7 @@ const {
   flowRelations,
   layouts,
   selectedNodes,
+  selectedPlaces,
   selectedFlowRelations,
   markedPlacePositions,
   addPlace,
@@ -16,6 +17,7 @@ const {
   addTransition,
   addFlowRelation,
   removeSelectedFlowRelations,
+  toggleTokenForSelectedPlaces,
 } = useENS()
 
 // Additional layers
@@ -69,12 +71,15 @@ const configs = reactive(
   <el-card>
     <template #header>
       <el-row>
-        <el-col :span="9">
+        <el-col :span="11">
           <label>
             Places & Transitions:
           </label>
           <el-button type="primary" plain @click="addPlace">Add place</el-button>
           <el-button type="primary" plain @click="addTransition">Add transition</el-button>
+          <el-button type="primary" plain :disabled="selectedPlaces.length === 0"
+                     @click="toggleTokenForSelectedPlaces">Toggle token
+          </el-button>
           <el-button type="danger" plain :disabled="selectedNodes.value.length === 0"
                      @click="removeSelectedNodes">Remove
           </el-button>
