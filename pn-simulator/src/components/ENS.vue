@@ -108,7 +108,7 @@ const configs = reactive(
     >
       <template #token="{scale}">
         <circle
-            v-for="(pos, node) in getMarkedPlacePositions"
+            v-for="(pos, node) in getMarkedPlacePositions()"
             :key="node"
             :cx="pos.x"
             :cy="pos.y"
