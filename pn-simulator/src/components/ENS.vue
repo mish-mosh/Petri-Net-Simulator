@@ -69,22 +69,20 @@ const configs = reactive(
   <el-card>
     <template #header>
       <el-row>
-        <el-col :span="4">
+        <el-col :span="8">
           <label>
             Places & Transitions:
           </label>
-        </el-col>
-        <el-col :span="8">
           <el-button type="primary" plain @click="addPlace">Add place</el-button>
           <el-button type="primary" plain @click="addTransition">Add transition</el-button>
           <el-button type="danger" plain :disabled="selectedNodes.value.length === 0"
                      @click="removeSelectedNodes">Remove
           </el-button>
         </el-col>
-        <el-col :span="4">
-          <label>Flow Relations:</label>
-        </el-col>
         <el-col :span="8">
+          <label>
+            Flow Relations:
+          </label>
           <el-button type="primary" plain :disabled="selectedNodes.value.length !== 2"
                      @click="addFlowRelation">
             Add
