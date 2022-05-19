@@ -1,5 +1,5 @@
 import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types";
-import {reactive, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import data from "@/data/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
 
@@ -61,18 +61,18 @@ function getMarkedPlacePositions(): NodePositions {
     }, {})
 }
 
-export default {
-    nodes,
-    flowRelations,
-    layouts,
-    nextNodeIndex,
-    nextFlowRelationIndex,
-    selectedNodes,
-    selectedFlowRelations,
-    addPlace,
-    removeSelectedNodes,
-    addTransition,
-    addFlowRelation,
-    removeSelectedFlowRelations,
-    getMarkedPlacePositions,
+export function useENS() {
+    return {
+        nodes: computed(() => nodes),
+        flowRelations: computed(() => flowRelations),
+        layouts: computed(() => layouts),
+        selectedNodes: computed(() => selectedNodes),
+        selectedFlowRelations: computed(() => selectedFlowRelations),
+        addPlace,
+        addTransition,
+        removeSelectedNodes,
+        addFlowRelation,
+        removeSelectedFlowRelations,
+        getMarkedPlacePositions,
+    }
 }
