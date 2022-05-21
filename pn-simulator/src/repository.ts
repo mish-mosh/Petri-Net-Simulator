@@ -1,5 +1,16 @@
-import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types";
-import {computed, reactive, ref} from "vue";
+import {
+    BaseNode,
+    BaseNodes,
+    Class,
+    FlowRelation,
+    FlowRelations,
+    PetriNet,
+    Place,
+    Places,
+    Transition,
+    Transitions
+} from "@/types";
+import {computed, reactive, ref, watch} from "vue";
 import data from "@/data/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
 
@@ -73,6 +84,20 @@ function toggleTokenForSelectedPlaces(): void {
     }
 }
 
+function filterByClass<C extends BaseNode>(TheClass: Class<C>): Record<string, C> {
+    return Object.keys(nodes)
+        .filter((nodeId: string) => nodes[nodeId] instanceof TheClass)
+        .reduce((nodesAccumulator: Record<string, C>, nodeId: string) => {
+            return Object.assign(nodesAccumulator, {[nodeId]: (nodes[nodeId] as C)})
+        }, {});
+}
+
+const getPlaces: () => Places = () => filterByClass(Place)
+const getTransitions: () => Transitions = () => filterByClass(Transition)
+
+watch(flowRelations, async (newFls, oldFls) => {
+    const pNet: PetriNet = new PetriNet(getPlaces(), getTransitions(), newFls);
+})
 
 export function useENS() {
     return {
