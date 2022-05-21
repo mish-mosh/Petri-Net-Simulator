@@ -4,7 +4,7 @@ import {
     Class,
     FlowRelation,
     FlowRelations,
-    PetriNet,
+    ENS,
     Place,
     Places,
     Transition,
@@ -84,19 +84,22 @@ function toggleTokenForSelectedPlaces(): void {
     }
 }
 
-function filterByClass<C extends BaseNode>(TheClass: Class<C>): Record<string, C> {
+function filterNodesByClass<N extends BaseNode>(
+    nodes: BaseNodes, TheClass: Class<N>
+): Record<string, N> {
     return Object.keys(nodes)
         .filter((nodeId: string) => nodes[nodeId] instanceof TheClass)
-        .reduce((nodesAccumulator: Record<string, C>, nodeId: string) => {
-            return Object.assign(nodesAccumulator, {[nodeId]: (nodes[nodeId] as C)})
+        .reduce((nodesAccumulator: Record<string, N>, nodeId: string) => {
+            return Object.assign(nodesAccumulator,
+                {[nodeId]: (nodes[nodeId] as N)})
         }, {});
 }
 
-const getPlaces: () => Places = () => filterByClass(Place)
-const getTransitions: () => Transitions = () => filterByClass(Transition)
+const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
+const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
 watch(flowRelations, async (newFls, oldFls) => {
-    const pNet: PetriNet = new PetriNet(getPlaces(), getTransitions(), newFls);
+    const pNet: ENS = new ENS(getPlaces(), getTransitions(), newFls);
 })
 
 export function useENS() {

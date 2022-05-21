@@ -30,11 +30,6 @@ class Transition extends BaseNode {
     }
 }
 
-type BaseNodes = Record<string, BaseNode>
-type Places = Record<string, Place>;
-type Transitions = Record<string, Transition>;
-
-
 class FlowRelation implements Edge {
     source: string;
     target: string;
@@ -48,9 +43,13 @@ class FlowRelation implements Edge {
 
 }
 
+
+type BaseNodes = Record<string, BaseNode>
+type Places = Record<string, Place>;
+type Transitions = Record<string, Transition>;
 type FlowRelations = Record<string, FlowRelation>
 
-class PetriNet {
+class ENS {
     places: Places;
     transitions: Transitions;
     flowRelations: FlowRelations
@@ -60,6 +59,18 @@ class PetriNet {
         this.transitions = transitions
         this.flowRelations = flowRelations
         this.validate()
+    }
+
+    prePlace(place: Place): Transitions {
+        const prePlaceIds: string[] =  Object.values(this.flowRelations)
+            .filter((fl: FlowRelation) => this.places[fl.target].name == place.name)
+            .map((fl: FlowRelation) => fl.source)
+        return Object.keys(this.transitions)
+            .filter((nodeId: string) => prePlaceIds.includes(nodeId))
+            .reduce((nodesAccumulator: Transitions, nodeId: string) => {
+                return Object.assign(nodesAccumulator,
+                    {[nodeId]: (this.transitions[nodeId])})
+            }, {});
     }
 
     protected validate(): void {
@@ -80,7 +91,7 @@ class PetriNet {
                 console.log(`${fl}`)
             }
             if (!sourceInTransitions && !targetInTransitions) {
-                console.log(`Error: Source (${this.transitions[fl.source].name}) and target (${this.transitions[fl.target].name}) cannot be both transitions`)
+                console.log(`Error: Source (${this.places[fl.source].name}) and target (${this.places[fl.target].name}) cannot be both transitions`)
                 console.log(`${fl}`)
             }
 
@@ -98,5 +109,5 @@ export {
     BaseNodes,
     FlowRelation,
     FlowRelations,
-    PetriNet
+    ENS
 }
