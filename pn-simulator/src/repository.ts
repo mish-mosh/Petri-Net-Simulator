@@ -41,7 +41,7 @@ function addFlowRelation() {
     if (selectedNodes.value.length !== 2) return
     const [source, target] = selectedNodes.value
     const relationId = `flowRelation${nextFlowRelationIndex.value}`
-    flowRelations[relationId] = new FlowRelation(nodes[source], nodes[target])
+    flowRelations[relationId] = new FlowRelation(source, target)
     nextFlowRelationIndex.value++
 }
 
