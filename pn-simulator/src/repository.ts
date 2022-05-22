@@ -2,9 +2,9 @@ import {
     BaseNode,
     BaseNodes,
     Class,
+    ENS,
     FlowRelation,
     FlowRelations,
-    ENS,
     Place,
     Places,
     Transition,
@@ -13,6 +13,7 @@ import {
 import {computed, reactive, ref, watch} from "vue";
 import data from "@/data/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
+import {filterRecordOnKeys} from "@/utils";
 
 // Initial data
 const nodes: BaseNodes = reactive({...data.nodes})
@@ -64,12 +65,9 @@ function removeSelectedFlowRelations() {
 
 function getMarkedPlacePositions(): NodePositions {
     // Get the Positions of Places with token
-    return Object.keys(layouts.nodes
-    ).filter((nodeId: string) => {
+    return filterRecordOnKeys(layouts.nodes, ((nodeId: string) => {
         return nodes[nodeId] instanceof Place && (nodes[nodeId] as Place).hasToken
-    }).reduce((pos: NodePositions, nodeId: string) => {
-        return Object.assign(pos, {[nodeId]: layouts.nodes[nodeId]})
-    }, {})
+    }))
 }
 
 function getSelectedPlaces(): string[] {
@@ -87,12 +85,9 @@ function toggleTokenForSelectedPlaces(): void {
 function filterNodesByClass<N extends BaseNode>(
     nodes: BaseNodes, TheClass: Class<N>
 ): Record<string, N> {
-    return Object.keys(nodes)
-        .filter((nodeId: string) => nodes[nodeId] instanceof TheClass)
-        .reduce((nodesAccumulator: Record<string, N>, nodeId: string) => {
-            return Object.assign(nodesAccumulator,
-                {[nodeId]: (nodes[nodeId] as N)})
-        }, {});
+    return filterRecordOnKeys(nodes,
+        (nodeId: string) => nodes[nodeId] instanceof TheClass
+    )
 }
 
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
