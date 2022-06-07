@@ -93,8 +93,9 @@ function filterNodesByClass<N extends BaseNode>(
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
 const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
-watch(flowRelations, async (newFls, oldFls) => {
-    const pNet: ENS = new ENS(getPlaces(), getTransitions(), newFls);
+watch(flowRelations, async (new_, old) => {
+    const pNet: ENS = new ENS(getPlaces(), getTransitions(), flowRelations);
+    console.log(pNet.prePlace(Object.values(getPlaces())[1]))
 })
 
 export function useENS() {

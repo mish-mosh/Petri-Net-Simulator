@@ -1,6 +1,7 @@
 import {Node} from "v-network-graph/lib/common/types";
 import {Edge} from "v-network-graph";
 import {ShapeType} from "v-network-graph/lib/common/configs";
+import {filterRecordOnKeys} from "@/utils";
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -62,15 +63,15 @@ class ENS {
     }
 
     prePlace(place: Place): Transitions {
-        const prePlaceIds: string[] =  Object.values(this.flowRelations)
-            .filter((fl: FlowRelation) => this.places[fl.target].name == place.name)
+        const prePlaceIds: string[] = Object.values(this.flowRelations)
+            .filter((fl: FlowRelation) => {
+                return Object.keys(this.places).includes(fl.target)
+                    && this.places[fl.target].name == place.name
+            })
             .map((fl: FlowRelation) => fl.source)
-        return Object.keys(this.transitions)
-            .filter((nodeId: string) => prePlaceIds.includes(nodeId))
-            .reduce((nodesAccumulator: Transitions, nodeId: string) => {
-                return Object.assign(nodesAccumulator,
-                    {[nodeId]: (this.transitions[nodeId])})
-            }, {});
+        return filterRecordOnKeys(this.transitions,
+            (nodeId: string) => prePlaceIds.includes(nodeId)
+        )
     }
 
     protected validate(): void {
