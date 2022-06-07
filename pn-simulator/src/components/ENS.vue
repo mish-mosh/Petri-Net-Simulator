@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
-import {Place, Transition} from "@/types";
+import {ENS, Place, Transition} from "@/types";
 import {reactive} from "vue";
 import {useENS} from "@/repository"
+import {ElNotification} from 'element-plus'
 
 const {
   nodes,
+  places,
+  transitions,
   flowRelations,
   layouts,
   selectedNodes,
@@ -65,13 +68,31 @@ const configs = reactive(
     })
 )
 
+function validate() {
+  const pNet: ENS = new ENS(places.value, transitions.value, flowRelations.value);
+  try {
+    pNet.validate();
+    return ElNotification({
+      title: 'Success',
+      message: 'This is a success message',
+      type: 'success',
+    })
+  } catch (e: any) {
+    return ElNotification({
+      title: 'Error',
+      message: e,
+      type: 'error',
+    })
+  }
+}
+
 </script>
 
 <template>
   <el-card>
     <template #header>
       <el-row>
-        <el-col :span="11">
+        <el-col :span="12">
           <label>
             Places & Transitions:
           </label>
@@ -95,6 +116,11 @@ const configs = reactive(
           <el-button type="danger" plain :disabled="selectedFlowRelations.value.length === 0"
                      @click="removeSelectedFlowRelations">
             Remove
+          </el-button>
+        </el-col>
+        <el-col :span="6">
+          <el-button type="primary" plain @click="validate">
+            Validate
           </el-button>
         </el-col>
       </el-row>

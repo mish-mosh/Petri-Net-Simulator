@@ -1,16 +1,5 @@
-import {
-    BaseNode,
-    BaseNodes,
-    Class,
-    ENS,
-    FlowRelation,
-    FlowRelations,
-    Place,
-    Places,
-    Transition,
-    Transitions
-} from "@/types";
-import {computed, reactive, ref, watch} from "vue";
+import {BaseNode, BaseNodes, Class, FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
+import {computed, reactive, ref} from "vue";
 import data from "@/data/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
 import {filterRecordOnKeys} from "@/utils";
@@ -93,14 +82,11 @@ function filterNodesByClass<N extends BaseNode>(
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
 const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
-watch(flowRelations, async (new_, old) => {
-    const pNet: ENS = new ENS(getPlaces(), getTransitions(), flowRelations);
-    console.log(pNet.prePlace(Object.values(getPlaces())[1]))
-})
-
 export function useENS() {
     return {
         nodes: computed(() => nodes),
+        places: computed(() => getPlaces()),
+        transitions: computed(() => getTransitions()),
         flowRelations: computed(() => flowRelations),
         layouts: computed(() => layouts),
         selectedNodes: computed(() => selectedNodes),
