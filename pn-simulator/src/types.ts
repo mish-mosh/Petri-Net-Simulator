@@ -118,18 +118,18 @@ class ENS {
 
             // Standard compatibility checks
             if (!sourceInPlaces && !sourceInTransitions) {
-                throw new Error("Source is neither in places nor in transitions")
+                throw new Error("Source is neither in places nor in transitions.")
             }
             if (!targetInPlaces && !targetInTransitions) {
-                throw new Error("Target is neither in places nor in transitions")
+                throw new Error("Target is neither in places nor in transitions.")
             }
 
             // Flow relation cannot have its source and its target both of same type (places/transitions)
             if (!sourceInPlaces && !targetInPlaces) {
-                throw new Error(`Source and target of flow relation (${this.transitions[fl.source].name}, ${this.transitions[fl.target].name}) cannot be both transitions`)
+                throw new Error(`Source and target of flow relation (${this.transitions[fl.source].name}, ${this.transitions[fl.target].name}) cannot be both transitions.`)
             }
             if (!sourceInTransitions && !targetInTransitions) {
-                throw new Error(`Source and target of flow relation (${this.places[fl.source].name}, ${this.places[fl.target].name}) cannot be both places`)
+                throw new Error(`Source and target of flow relation (${this.places[fl.source].name}, ${this.places[fl.target].name}) cannot be both places.`)
             }
         })
 
@@ -139,16 +139,16 @@ class ENS {
 
             // Transitions must have at least one pre- and one post-place
             if (Object.keys(preTransition).length == 0) {
-                throw new Error(`Transition "${transition.name}" must have at least one pre-place`)
+                throw new Error(`Transition "${transition.name}" must have at least one pre-place.`)
             }
             if (Object.keys(postTransition).length == 0) {
-                throw new Error(`Transition "${transition.name}" must have at least one post-place`)
+                throw new Error(`Transition "${transition.name}" must have at least one post-place.`)
             }
 
             // Transitions cannot have a place as a member of its pre- and post-place in the same time
             Object.keys(preTransition).forEach((placeId: string) => {
                 if (Object.keys(postTransition).includes(placeId)) {
-                    throw new Error(`Place "${this.places[placeId].name}" cannot be in be a pre-place as well as a post-place for transition "${transition.name}"`)
+                    throw new Error(`Place "${this.places[placeId].name}" cannot be in be a pre-place as well as a post-place for transition "${transition.name}".`)
                 }
             })
         })

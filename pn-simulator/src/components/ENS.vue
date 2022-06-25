@@ -73,13 +73,13 @@ function validate() {
   try {
     pNet.validate();
     return ElNotification({
-      title: 'Success',
-      message: 'This is a success message',
+      title: 'Network Valid',
+      message: 'The network is valid!',
       type: 'success',
     })
   } catch (e: any) {
     return ElNotification({
-      title: 'Error',
+      title: 'Network not Valid',
       message: e,
       type: 'error',
     })
