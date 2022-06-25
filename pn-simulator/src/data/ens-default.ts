@@ -9,7 +9,7 @@ const nodes: BaseNodes = {
 
 const flowRelations: FlowRelations = {
     flowRelation1: new FlowRelation("place1", "transition1",),
-    // flowRelation2: new FlowRelation("transition1", "place2"),
+    flowRelation2: new FlowRelation("transition1", "place2"),
 }
 
 const layouts: Layouts = {
