@@ -129,7 +129,7 @@ const eventHandlers: EventHandlers = {
       }
     }
 
-function simulate() {
+function toggleSimMode() {
   simMode = !simMode
   if (simMode) {
     configs.view.grid.visible = false
@@ -182,7 +182,7 @@ function simulate() {
           <el-button type="primary" plain @click="validate">
             Validate
           </el-button>
-          <el-button type="primary" plain @click="simulate">
+          <el-button type="primary" plain @click="toggleSimMode">
             Simulate
           </el-button>
         </el-col>

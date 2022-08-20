@@ -3,9 +3,9 @@ import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types
 
 const nodes: BaseNodes = {
     place1: new Place("p1", true),
+    place2: new Place("p2", false),
     transition1: new Transition("t1"),
     transition2: new Transition("t2"),
-    place2: new Place("p2", false),
 }
 
 const flowRelations: FlowRelations = {
