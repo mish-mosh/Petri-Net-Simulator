@@ -6,6 +6,7 @@ import {useENS} from "@/repository"
 import {ElNotification} from 'element-plus'
 import {fireENS} from "@/sim";
 import {cloneDeep} from "lodash"
+import {ForceEdgeDatum, ForceLayout, ForceNodeDatum} from "v-network-graph/lib/force-layout"
 
 const {
   nodes,
@@ -23,8 +24,9 @@ const {
   addFlowRelation,
   removeSelectedFlowRelations,
   toggleTokenForSelectedPlaces,
-  resetENS,
+  loadENS,
 } = useENS()
+
 
 // Additional layers
 const layers: Layers = {
@@ -66,16 +68,35 @@ const configs = reactive(
         autoPanAndZoomOnLoad: "fit-content",
         grid: {
           visible: true
-        }
+        },
+        layoutHandler: new ForceLayout({
+          positionFixedByDrag: false,
+          positionFixedByClickWithAltKey: true,
+          // * The following are the default parameters for the simulation.
+          // * You can customize it by uncommenting below.
+          createSimulation: (d3, nodes, edges) => {
+            const forceLink = d3.forceLink<ForceNodeDatum, ForceEdgeDatum>(edges).id(d => d.id)
+            return d3
+              .forceSimulation(nodes)
+              .force("edge", forceLink.distance(1))
+              .force("charge", d3.forceManyBody(1))
+              .force("collide", d3.forceCollide(1).strength(0.2))
+              .force("center", d3.forceCenter().strength(0.05))
+              .alphaMin(0.001)
+          }
+        }),
       }
-    })
+    }),
 )
+
 
 let backUpNet: ENS = cloneDeep(new ENS(
     places.value,
     transitions.value,
     flowRelations.value,
 ))
+
+let simMode: boolean = false
 
 function validate() {
   const pNet: ENS = new ENS(places.value, transitions.value, flowRelations.value);
@@ -95,32 +116,36 @@ function validate() {
   }
 }
 
-// const eventHandlers: EventHandlers = {}
 const eventHandlers: EventHandlers = {
-  "node:click": ({node}) => {
-    if (!configs.view.grid.visible) {
-      let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
-      if (nodes.value[node] instanceof Transition) {
-        resetENS(fireENS(currentNet, nodes.value[node]))
+      "node:click": ({node}) => {
+        if (!simMode) {
+          return
+        }
+        let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
+        if (nodes.value[node] instanceof Transition) {
+          loadENS(fireENS(currentNet, nodes.value[node]))
+        }
+
       }
     }
-  }
-}
 
 function simulate() {
-  configs.view.grid.visible = !configs.view.grid.visible
-  configs.node.selectable = !configs.node.selectable
-  if (configs.view.grid.visible) {
-    resetENS(backUpNet)
+  simMode = !simMode
+  if (simMode) {
+    configs.view.grid.visible = false
+    configs.node.selectable = false
+    backUpNet = cloneDeep(new ENS(
+        places.value,
+        transitions.value,
+        flowRelations.value,
+    ))
   } else {
-    backUpNet = new ENS(
-        cloneDeep(places.value),
-        cloneDeep(transitions.value),
-        cloneDeep(flowRelations.value),
-    )
+    configs.view.grid.visible = true
+    configs.node.selectable = true
+    loadENS(backUpNet)
+    delete eventHandlers["node:click"]
   }
 }
-
 </script>
 
 <template>

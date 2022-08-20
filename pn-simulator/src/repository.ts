@@ -93,7 +93,7 @@ function filterNodesByClass<N extends BaseNode>(
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
 const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
-function resetENS(ens: ENS) {
+function loadENS(ens: ENS) {
     const newNodes = Object.assign({}, ens.places, ens.transitions)
     const newFlowRelations = Object.assign({}, ens.flowRelations)
     Object.keys(nodes).forEach((nodeId: string) => {
@@ -127,6 +127,6 @@ export function useENS() {
         addFlowRelation,
         removeSelectedFlowRelations,
         toggleTokenForSelectedPlaces,
-        resetENS,
+        loadENS,
     }
 }
