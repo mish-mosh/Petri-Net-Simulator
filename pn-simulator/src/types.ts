@@ -65,6 +65,20 @@ class ENS {
         return filterRecordOnKeys(this.places, (k: string) => this.places[k].hasToken)
     }
 
+    getActiveTransitions(): Transitions {
+        return filterRecordOnKeys(this.transitions, (tId: string) => {
+            return Object.keys(this.preTransition(this.transitions[tId])).length != 0
+                &&
+                Object.keys(this.postTransition(this.transitions[tId])).length != 0
+                &&
+                Object.keys(this.preTransition(this.transitions[tId]))
+                    .every(pId => Object.keys(this.getMarkings()).includes(pId))
+                &&
+                Object.keys(this.postTransition(this.transitions[tId]))
+                    .every(pId => !Object.keys(this.getMarkings()).includes(pId))
+        })
+    }
+
     prePlace(place: Place): Transitions {
         const prePlaceIds: string[] = Object.values(this.flowRelations)
             .filter((fl: FlowRelation) => {

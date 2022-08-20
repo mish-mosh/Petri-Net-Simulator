@@ -121,6 +121,13 @@ export function useENS() {
         selectedPlaces: computed(() => getSelectedPlaces()),
         selectedFlowRelations: computed(() => selectedFlowRelations),
         markedPlacePositions: computed(() => getMarkedPlacePositions()),
+        ens: computed(() => {
+            return new ENS(
+                getPlaces(),
+                getTransitions(),
+                flowRelations,
+            )
+        }),
         addPlace,
         addTransition,
         removeSelectedNodes,

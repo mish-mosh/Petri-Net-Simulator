@@ -18,6 +18,7 @@ const {
   selectedPlaces,
   selectedFlowRelations,
   markedPlacePositions,
+  ens,
   addPlace,
   removeSelectedNodes,
   addTransition,
@@ -42,9 +43,16 @@ const configs = reactive(
         selectable: true,
         normal: {
           type: (node: Place | Transition) => node.shape,
-          color: "#ffffff",
+          color: (node: Place | Transition) => {
+            if (node instanceof Transition) {
+              if (Object.values(ens.value.getActiveTransitions()).includes(node)) {
+                return "#07ff8f"
+              }
+            }
+            return "#ffffff"
+          },
           strokeWidth: 2,
-          strokeColor: "#000000"
+          strokeColor: "#000000",
         },
         hover: {
           color: "#2aadec"
@@ -77,20 +85,19 @@ const configs = reactive(
           createSimulation: (d3, nodes, edges) => {
             const forceLink = d3.forceLink<ForceNodeDatum, ForceEdgeDatum>(edges).id(d => d.id)
             return d3
-              .forceSimulation(nodes)
-              .force("edge", forceLink.distance(1))
-              .force("charge", d3.forceManyBody(1))
-              .force("collide", d3.forceCollide(1).strength(0.2))
-              .force("center", d3.forceCenter().strength(0.05))
-              .alphaMin(0.001)
+                .forceSimulation(nodes)
+                .force("edge", forceLink.distance(1))
+                .force("charge", d3.forceManyBody())
+                .force("collide", d3.forceCollide(1).strength(0.2))
+                .force("center", d3.forceCenter().strength(0.05))
+                .alphaMin(0.001)
           }
         }),
       }
     }),
 )
 
-
-let backUpNet: ENS = cloneDeep(new ENS(
+let initialNet: ENS = cloneDeep(new ENS(
     places.value,
     transitions.value,
     flowRelations.value,
@@ -99,9 +106,8 @@ let backUpNet: ENS = cloneDeep(new ENS(
 let simMode: boolean = false
 
 function validate() {
-  const pNet: ENS = new ENS(places.value, transitions.value, flowRelations.value);
   try {
-    pNet.validate();
+    ens.value.validate();
     return ElNotification({
       title: 'Network Valid',
       message: 'The network is valid!',
@@ -117,35 +123,45 @@ function validate() {
 }
 
 const eventHandlers: EventHandlers = {
-      "node:click": ({node}) => {
-        if (!simMode) {
-          return
-        }
-        let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
-        if (nodes.value[node] instanceof Transition) {
-          loadENS(fireENS(currentNet, nodes.value[node]))
-        }
-
-      }
+  "node:click": ({node}) => {
+    if (!simMode) {
+      return
     }
+    let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
+    if (nodes.value[node] instanceof Transition) {
+      loadENS(fireENS(currentNet, nodes.value[node]))
+    }
+
+  }
+}
 
 function toggleSimMode() {
   simMode = !simMode
   if (simMode) {
-    configs.view.grid.visible = false
-    configs.node.selectable = false
-    backUpNet = cloneDeep(new ENS(
-        places.value,
-        transitions.value,
-        flowRelations.value,
-    ))
+    try {
+      ens.value.validate()
+      configs.view.grid.visible = false
+      configs.node.selectable = false
+      initialNet = cloneDeep(new ENS(
+          places.value,
+          transitions.value,
+          flowRelations.value,
+      ))
+    } catch (e: any) {
+      simMode = false
+      return ElNotification({
+        title: 'Network not Valid',
+        message: e,
+        type: 'error',
+      })
+    }
   } else {
     configs.view.grid.visible = true
     configs.node.selectable = true
-    loadENS(backUpNet)
-    delete eventHandlers["node:click"]
+    loadENS(initialNet)
   }
 }
+
 </script>
 
 <template>
