@@ -61,6 +61,10 @@ class ENS {
         this.flowRelations = flowRelations
     }
 
+    getMarkings(): Places {
+        return filterRecordOnKeys(this.places, (k: string) => this.places[k].hasToken)
+    }
+
     prePlace(place: Place): Transitions {
         const prePlaceIds: string[] = Object.values(this.flowRelations)
             .filter((fl: FlowRelation) => {

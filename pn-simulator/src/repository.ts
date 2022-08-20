@@ -1,4 +1,15 @@
-import {BaseNode, BaseNodes, Class, FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
+import {
+    BaseNode,
+    BaseNodes,
+    Class,
+    ENS,
+    FlowRelation,
+    FlowRelations,
+    Place,
+    Places,
+    Transition,
+    Transitions
+} from "@/types";
 import {computed, reactive, ref} from "vue";
 import data from "@/data/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
@@ -82,6 +93,23 @@ function filterNodesByClass<N extends BaseNode>(
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
 const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
+function resetENS(ens: ENS) {
+    const newNodes = Object.assign({}, ens.places, ens.transitions)
+    const newFlowRelations = Object.assign({}, ens.flowRelations)
+    Object.keys(nodes).forEach((nodeId: string) => {
+        delete nodes[nodeId]
+    })
+    Object.keys(flowRelations).forEach((flId: string) => {
+        delete flowRelations[flId]
+    })
+    Object.keys(newNodes).forEach((nodeID: string) => {
+        addNode(nodeID, newNodes[nodeID])
+    })
+    Object.keys(newFlowRelations).forEach((flID: string) => {
+        flowRelations[flID] = newFlowRelations[flID]
+    })
+}
+
 export function useENS() {
     return {
         nodes: computed(() => nodes),
@@ -99,5 +127,6 @@ export function useENS() {
         addFlowRelation,
         removeSelectedFlowRelations,
         toggleTokenForSelectedPlaces,
+        resetENS,
     }
 }

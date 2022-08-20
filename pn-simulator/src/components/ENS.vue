@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, Layers, VNetworkGraph} from "v-network-graph";
+import {defineConfigs, Edge, EventHandlers, Layers, VNetworkGraph} from "v-network-graph";
 import {ENS, Place, Transition} from "@/types";
 import {reactive} from "vue";
 import {useENS} from "@/repository"
 import {ElNotification} from 'element-plus'
+import {fireENS} from "@/sim";
+import {cloneDeep} from "lodash"
 
 const {
   nodes,
@@ -21,6 +23,7 @@ const {
   addFlowRelation,
   removeSelectedFlowRelations,
   toggleTokenForSelectedPlaces,
+  resetENS,
 } = useENS()
 
 // Additional layers
@@ -68,6 +71,12 @@ const configs = reactive(
     })
 )
 
+let backUpNet: ENS = cloneDeep(new ENS(
+    places.value,
+    transitions.value,
+    flowRelations.value,
+))
+
 function validate() {
   const pNet: ENS = new ENS(places.value, transitions.value, flowRelations.value);
   try {
@@ -83,6 +92,32 @@ function validate() {
       message: e,
       type: 'error',
     })
+  }
+}
+
+// const eventHandlers: EventHandlers = {}
+const eventHandlers: EventHandlers = {
+  "node:click": ({node}) => {
+    if (!configs.view.grid.visible) {
+      let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
+      if (nodes.value[node] instanceof Transition) {
+        resetENS(fireENS(currentNet, nodes.value[node]))
+      }
+    }
+  }
+}
+
+function simulate() {
+  configs.view.grid.visible = !configs.view.grid.visible
+  configs.node.selectable = !configs.node.selectable
+  if (configs.view.grid.visible) {
+    resetENS(backUpNet)
+  } else {
+    backUpNet = new ENS(
+        cloneDeep(places.value),
+        cloneDeep(transitions.value),
+        cloneDeep(flowRelations.value),
+    )
   }
 }
 
@@ -122,6 +157,9 @@ function validate() {
           <el-button type="primary" plain @click="validate">
             Validate
           </el-button>
+          <el-button type="primary" plain @click="simulate">
+            Simulate
+          </el-button>
         </el-col>
       </el-row>
     </template>
@@ -134,6 +172,7 @@ function validate() {
         :configs="configs"
         :layers="layers"
         :layouts="layouts"
+        :event-handlers="eventHandlers"
     >
       <template #token="{scale}">
         <circle
