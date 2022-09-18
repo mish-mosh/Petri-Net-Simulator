@@ -79,6 +79,10 @@ class ENS {
         })
     }
 
+    transitionIsActive(transition: Transition): boolean {
+        return Object.values(this.getActiveTransitions()).includes(transition)
+    }
+
     prePlace(place: Place): Transitions {
         const prePlaceIds: string[] = Object.values(this.flowRelations)
             .filter((fl: FlowRelation) => {
