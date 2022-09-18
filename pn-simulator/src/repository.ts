@@ -26,15 +26,23 @@ const nextFlowRelationIndex = ref(Object.keys(flowRelations).length + 1)
 const selectedNodes = ref<string[]>([])
 const selectedFlowRelations = ref<string[]>([])
 
+
 function addNode(nodeId: string, node: Place | Transition): void {
     nodes[nodeId] = node
     nextNodeIndex.value++
 }
 
 function removeSelectedNodes(): void {
-    for (const nodeID of selectedNodes.value) {
-        delete nodes[nodeID]
-    }
+    selectedNodes.value.forEach((nodeId: string) => {
+        delete nodes[nodeId]
+        const flowRelationsToBeDeleted: FlowRelations = filterRecordOnKeys(
+            flowRelations,
+            (flId: string) => flowRelations[flId].source == nodeId || flowRelations[flId].target == nodeId
+        )
+        Object.keys(flowRelationsToBeDeleted).forEach((flId: string) => {
+            delete flowRelations[flId]
+        })
+    })
 }
 
 function addPlace(): void {
@@ -49,7 +57,7 @@ function addTransition(): void {
     addNode(nodeId, new Transition(name))
 }
 
-function addFlowRelation() {
+function addFlowRelation(): void {
     if (selectedNodes.value.length !== 2) return
     const [source, target] = selectedNodes.value
     const relationId = `flowRelation${nextFlowRelationIndex.value}`
@@ -57,10 +65,10 @@ function addFlowRelation() {
     nextFlowRelationIndex.value++
 }
 
-function removeSelectedFlowRelations() {
-    for (const flowRelationId of selectedFlowRelations.value) {
-        delete flowRelations[flowRelationId]
-    }
+function removeSelectedFlowRelations(): void {
+    selectedFlowRelations.value.forEach((flId: string) => {
+        delete flowRelations[flId]
+    })
 }
 
 function getMarkedPlacePositions(): NodePositions {
@@ -76,10 +84,16 @@ function getSelectedPlaces(): string[] {
     })
 }
 
+function getSelectedTransitions(): string[] {
+    return selectedNodes.value.filter((nodeId: string) => {
+        return nodes[nodeId] instanceof Transition
+    })
+}
+
 function toggleTokenForSelectedPlaces(): void {
-    for (const placeId of getSelectedPlaces()) {
+    getSelectedPlaces().forEach((placeId: string) => {
         (nodes[placeId] as Place).hasToken = !(nodes[placeId] as Place).hasToken
-    }
+    })
 }
 
 function filterNodesByClass<N extends BaseNode>(
@@ -93,7 +107,7 @@ function filterNodesByClass<N extends BaseNode>(
 const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
 const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
 
-function loadENS(ens: ENS) {
+function loadENS(ens: ENS): void {
     const newNodes = Object.assign({}, ens.places, ens.transitions)
     const newFlowRelations = Object.assign({}, ens.flowRelations)
     Object.keys(nodes).forEach((nodeId: string) => {
@@ -113,12 +127,10 @@ function loadENS(ens: ENS) {
 export function useENS() {
     return {
         nodes: computed(() => nodes),
-        places: computed(() => getPlaces()),
-        transitions: computed(() => getTransitions()),
-        flowRelations: computed(() => flowRelations),
         layouts: computed(() => layouts),
         selectedNodes: computed(() => selectedNodes),
         selectedPlaces: computed(() => getSelectedPlaces()),
+        selectedTransitions: computed(() => getSelectedTransitions()),
         selectedFlowRelations: computed(() => selectedFlowRelations),
         markedPlacePositions: computed(() => getMarkedPlacePositions()),
         ens: computed(() => {

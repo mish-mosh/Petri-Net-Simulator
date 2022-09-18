@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import {defineConfigs, Edge, EventHandlers, Layers, VNetworkGraph} from "v-network-graph";
-import {ENS, Place, Transition} from "@/types";
-import {reactive} from "vue";
+import {EventHandlers, Layers, VNetworkGraph} from "v-network-graph";
+import {Place, Transition} from "@/types";
 import {useENS} from "@/repository"
 import {ElNotification} from 'element-plus'
-import {fireENS} from "@/sim";
-import {cloneDeep} from "lodash"
-import {ForceEdgeDatum, ForceLayout, ForceNodeDatum} from "v-network-graph/lib/force-layout"
+import {fireTransitionInENS, simMode, toggleSimMode} from "@/sim";
+import {configs} from "@/vnet_configs";
+import {ref} from "vue";
 
 const {
   nodes,
-  places,
-  transitions,
-  flowRelations,
   layouts,
   selectedNodes,
   selectedPlaces,
+  selectedTransitions,
   selectedFlowRelations,
   markedPlacePositions,
   ens,
@@ -25,7 +22,6 @@ const {
   addFlowRelation,
   removeSelectedFlowRelations,
   toggleTokenForSelectedPlaces,
-  loadENS,
 } = useENS()
 
 
@@ -35,75 +31,7 @@ const layers: Layers = {
   token: "nodes",
 }
 
-
-// Configs
-const configs = reactive(
-    defineConfigs<Place | Transition, Edge>({
-      node: {
-        selectable: true,
-        normal: {
-          type: (node: Place | Transition) => node.shape,
-          color: (node: Place | Transition) => {
-            if (node instanceof Transition) {
-              if (Object.values(ens.value.getActiveTransitions()).includes(node)) {
-                return "#07ff8f"
-              }
-            }
-            return "#ffffff"
-          },
-          strokeWidth: 2,
-          strokeColor: "#000000",
-        },
-        hover: {
-          color: "#2aadec"
-        },
-      },
-      edge: {
-        selectable: true,
-        normal: {
-          color: "#000000"
-        },
-        hover: {
-          color: "#2aadec"
-        },
-        marker: {
-          target: {
-            type: "arrow"
-          }
-        }
-      },
-      view: {
-        autoPanAndZoomOnLoad: "fit-content",
-        grid: {
-          visible: true
-        },
-        layoutHandler: new ForceLayout({
-          positionFixedByDrag: false,
-          positionFixedByClickWithAltKey: true,
-          // * The following are the default parameters for the simulation.
-          // * You can customize it by uncommenting below.
-          createSimulation: (d3, nodes, edges) => {
-            const forceLink = d3.forceLink<ForceNodeDatum, ForceEdgeDatum>(edges).id(d => d.id)
-            return d3
-                .forceSimulation(nodes)
-                .force("edge", forceLink.distance(1))
-                .force("charge", d3.forceManyBody())
-                .force("collide", d3.forceCollide(1).strength(0.2))
-                .force("center", d3.forceCenter().strength(0.05))
-                .alphaMin(0.001)
-          }
-        }),
-      }
-    }),
-)
-
-let initialNet: ENS = cloneDeep(new ENS(
-    places.value,
-    transitions.value,
-    flowRelations.value,
-))
-
-let simMode: boolean = false
+const activeTabName = ref('places')
 
 function validate() {
   try {
@@ -122,43 +50,35 @@ function validate() {
   }
 }
 
-const eventHandlers: EventHandlers = {
-  "node:click": ({node}) => {
-    if (!simMode) {
-      return
-    }
-    let currentNet: ENS = new ENS(places.value, transitions.value, flowRelations.value)
-    if (nodes.value[node] instanceof Transition) {
-      loadENS(fireENS(currentNet, nodes.value[node]))
-    }
-
-  }
+function beforeLeaveHandler(): boolean {
+  // When simMode is on, this will prevent Switching to the editor tabs when clicking on nodes/edges
+  return !simMode.value
 }
 
-function toggleSimMode() {
-  simMode = !simMode
-  if (simMode) {
-    try {
-      ens.value.validate()
-      configs.view.grid.visible = false
-      configs.node.selectable = false
-      initialNet = cloneDeep(new ENS(
-          places.value,
-          transitions.value,
-          flowRelations.value,
-      ))
-    } catch (e: any) {
-      simMode = false
-      return ElNotification({
-        title: 'Network not Valid',
-        message: e,
-        type: 'error',
-      })
+const eventHandlers: EventHandlers = {
+  "node:click": ({node}) => {
+    if (nodes.value[node] instanceof Transition) {
+      fireTransitionInENS(ens.value, ens.value.transitions[node])
+      activeTabName.value = "transitions"
     }
-  } else {
-    configs.view.grid.visible = true
-    configs.node.selectable = true
-    loadENS(initialNet)
+    if (nodes.value[node] instanceof Place) {
+      activeTabName.value = "places"
+    }
+  },
+  "node:select": ({node}) => {
+    if (selectedPlaces.value.length == 1 && selectedTransitions.value.length == 1) {
+      activeTabName.value = "flowRelations"
+      return
+    }
+    if (nodes.value[node] instanceof Transition) {
+      activeTabName.value = "transitions"
+    }
+    if (nodes.value[node] instanceof Place) {
+      activeTabName.value = "places"
+    }
+  },
+  "edge:select": () => {
+    activeTabName.value = "flowRelations"
   }
 }
 
@@ -167,49 +87,48 @@ function toggleSimMode() {
 <template>
   <el-card>
     <template #header>
-      <el-row>
-        <el-col :span="12">
-          <label>
-            Places & Transitions:
-          </label>
-          <el-button type="primary" plain @click="addPlace">Add place</el-button>
-          <el-button type="primary" plain @click="addTransition">Add transition</el-button>
-          <el-button type="primary" plain :disabled="selectedPlaces.length === 0"
-                     @click="toggleTokenForSelectedPlaces">Toggle token
-          </el-button>
-          <el-button type="danger" plain :disabled="selectedNodes.value.length === 0"
-                     @click="removeSelectedNodes">Remove
-          </el-button>
-        </el-col>
-        <el-col :span="6">
-          <label>
-            Flow Relations:
-          </label>
-          <el-button type="primary" plain :disabled="selectedNodes.value.length !== 2"
-                     @click="addFlowRelation">
-            Add
-          </el-button>
-          <el-button type="danger" plain :disabled="selectedFlowRelations.value.length === 0"
-                     @click="removeSelectedFlowRelations">
-            Remove
-          </el-button>
-        </el-col>
-        <el-col :span="6">
-          <el-button type="primary" plain @click="validate">
-            Validate
-          </el-button>
-          <el-button type="primary" plain @click="toggleSimMode">
-            Simulate
-          </el-button>
-        </el-col>
-      </el-row>
+    <el-tabs type="border-card" v-model="activeTabName" :before-leave="beforeLeaveHandler">
+      <el-tab-pane label="Places" name="places" :disabled="simMode">
+        <el-button type="primary" plain @click="addPlace">Add</el-button>
+        <el-button type="primary" plain :disabled="selectedPlaces.length === 0"
+                   @click="toggleTokenForSelectedPlaces">Toggle token
+        </el-button>
+        <el-button type="danger" plain :disabled="selectedPlaces.length === 0"
+                   @click="removeSelectedNodes">Remove
+        </el-button>
+      </el-tab-pane>
+      <el-tab-pane label="Transitions" name="transitions" :disabled="simMode">
+        <el-button type="primary" plain @click="addTransition">Add</el-button>
+        <el-button type="danger" plain :disabled="selectedTransitions.length === 0"
+                   @click="removeSelectedNodes">Remove
+        </el-button>
+      </el-tab-pane>
+      <el-tab-pane label="Flow Relations" name="flowRelations" :disabled="simMode">
+        <el-button type="primary" plain :disabled="selectedNodes.value.length !== 2"
+                   @click="addFlowRelation">
+          Add
+        </el-button>
+        <el-button type="danger" plain :disabled="selectedFlowRelations.value.length === 0"
+                   @click="removeSelectedFlowRelations">
+          Remove
+        </el-button>
+      </el-tab-pane>
+      <el-tab-pane label="Simulation" name="simulation">
+        <el-button type="primary" plain @click="validate">
+          Validate
+        </el-button>
+        <el-button type="primary" plain @click="toggleSimMode">
+          Simulate
+        </el-button>
+      </el-tab-pane>
+    </el-tabs>
     </template>
-
+    <el-alert v-if="simMode" title="Simulation mode is on." type="info" :closable="false" show-icon />
     <v-network-graph
         v-model:selected-nodes="selectedNodes.value"
         v-model:selected-edges="selectedFlowRelations.value"
         :nodes="nodes"
-        :edges="flowRelations"
+        :edges="ens.flowRelations"
         :configs="configs"
         :layers="layers"
         :layouts="layouts"

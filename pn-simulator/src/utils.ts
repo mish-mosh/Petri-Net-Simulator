@@ -1,5 +1,5 @@
 export function filterRecordOnKeys(
-    obj: Record<string, any>, predicate: (k: string) => Boolean
+    obj: Record<string, any>, predicate: (k: string) => boolean
 ): Record<string, any> {
     return Object.keys(obj)
         .filter((key: string) => predicate(key))
