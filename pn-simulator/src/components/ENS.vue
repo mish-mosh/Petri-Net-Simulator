@@ -87,43 +87,50 @@ const eventHandlers: EventHandlers = {
 <template>
   <el-card>
     <template #header>
-    <el-tabs type="border-card" v-model="activeTabName" :before-leave="beforeLeaveHandler">
-      <el-tab-pane label="Places" name="places" :disabled="simMode">
-        <el-button type="primary" plain @click="addPlace">Add</el-button>
-        <el-button type="primary" plain :disabled="selectedPlaces.length === 0"
-                   @click="toggleTokenForSelectedPlaces">Toggle token
-        </el-button>
-        <el-button type="danger" plain :disabled="selectedPlaces.length === 0"
-                   @click="removeSelectedNodes">Remove
-        </el-button>
-      </el-tab-pane>
-      <el-tab-pane label="Transitions" name="transitions" :disabled="simMode">
-        <el-button type="primary" plain @click="addTransition">Add</el-button>
-        <el-button type="danger" plain :disabled="selectedTransitions.length === 0"
-                   @click="removeSelectedNodes">Remove
-        </el-button>
-      </el-tab-pane>
-      <el-tab-pane label="Flow Relations" name="flowRelations" :disabled="simMode">
-        <el-button type="primary" plain :disabled="selectedNodes.value.length !== 2"
-                   @click="addFlowRelation">
-          Add
-        </el-button>
-        <el-button type="danger" plain :disabled="selectedFlowRelations.value.length === 0"
-                   @click="removeSelectedFlowRelations">
-          Remove
-        </el-button>
-      </el-tab-pane>
-      <el-tab-pane label="Simulation" name="simulation">
-        <el-button type="primary" plain @click="validate">
-          Validate
-        </el-button>
-        <el-button type="primary" plain @click="toggleSimMode">
-          Simulate
-        </el-button>
-      </el-tab-pane>
-    </el-tabs>
+      <el-tabs type="border-card" v-model="activeTabName" :before-leave="beforeLeaveHandler">
+        <el-tab-pane label="Places" name="places" :disabled="simMode">
+          <el-button type="primary" plain @click="addPlace">Add</el-button>
+          <el-button type="primary" plain :disabled="selectedPlaces.length === 0"
+                     @click="toggleTokenForSelectedPlaces">Toggle token
+          </el-button>
+          <el-button type="danger" plain :disabled="selectedPlaces.length === 0"
+                     @click="removeSelectedNodes">Remove
+          </el-button>
+        </el-tab-pane>
+        <el-tab-pane label="Transitions" name="transitions" :disabled="simMode">
+          <el-button type="primary" plain @click="addTransition">Add</el-button>
+          <el-button type="danger" plain :disabled="selectedTransitions.length === 0"
+                     @click="removeSelectedNodes">Remove
+          </el-button>
+        </el-tab-pane>
+        <el-tab-pane label="Flow Relations" name="flowRelations" :disabled="simMode">
+          <el-button type="primary" plain :disabled="selectedNodes.value.length !== 2"
+                     @click="addFlowRelation">
+            Add
+          </el-button>
+          <el-button type="danger" plain :disabled="selectedFlowRelations.value.length === 0"
+                     @click="removeSelectedFlowRelations">
+            Remove
+          </el-button>
+        </el-tab-pane>
+        <el-tab-pane label="Simulation" name="simulation">
+          <el-button type="primary" plain @click="validate">
+            Validate network
+          </el-button>
+          <el-button type="primary" plain @click="toggleSimMode">
+            Toggle Simulation mode
+          </el-button>
+        </el-tab-pane>
+      </el-tabs>
     </template>
-    <el-alert v-if="simMode" title="Simulation mode is on." type="info" :closable="false" show-icon />
+    <el-alert v-if="simMode" title="Simulation mode"
+              type="info" :closable="false">
+      Click on any active (green) transition to make it fire.
+    </el-alert>
+    <el-alert v-if="!simMode" title="Edit mode"
+              type="info" :closable="false">
+      Edit the network or its places, transitions and flow relations.
+    </el-alert>
     <v-network-graph
         v-model:selected-nodes="selectedNodes.value"
         v-model:selected-edges="selectedFlowRelations.value"

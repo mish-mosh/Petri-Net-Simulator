@@ -2,7 +2,7 @@ import {ENS, Places, Transition} from "@/types";
 import {cloneDeep} from "lodash";
 import {useENS} from "@/repository";
 import {ElNotification} from "element-plus/es";
-import {Ref, ref, UnwrapRef} from "vue";
+import {Ref, ref, UnwrapRef, watch} from "vue";
 
 const {
     ens,
@@ -17,19 +17,9 @@ let initialNet: ENS = cloneDeep(new ENS(
 
 export const simMode: Ref<UnwrapRef<boolean>> = ref(false)
 
-export function toggleSimMode() {
-    simMode.value = !simMode.value
-    if (simMode.value) {
-        try {
-            ens.value.validate()
-        } catch (e: any) {
-            simMode.value = false
-            return ElNotification({
-                title: 'Network not Valid',
-                message: e,
-                type: 'error',
-            })
-        }
+function onSimModeChange(simMode: boolean) {
+    ens.value.validate()
+    if (simMode) {
         initialNet = cloneDeep(new ENS(
             ens.value.places,
             ens.value.transitions,
@@ -38,6 +28,10 @@ export function toggleSimMode() {
     } else {
         loadENS(initialNet)
     }
+}
+
+export function toggleSimMode(): void {
+    simMode.value = !simMode.value
 }
 
 export function fireTransitionInENS(ens: ENS, transition: Transition): void {
@@ -68,3 +62,17 @@ function fireENS(ens: ENS, transition: Transition): ENS {
         ens.flowRelations
     )
 }
+
+watch(simMode, (value: boolean) => {
+    try {
+        onSimModeChange(value);
+    } catch (e: any) {
+        simMode.value = false
+        return ElNotification({
+            title: 'Network not Valid',
+            message: e,
+            type: 'error',
+        })
+    }
+})
+
