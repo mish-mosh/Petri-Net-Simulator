@@ -17,7 +17,7 @@ let initialNet: ENS = cloneDeep(new ENS(
 
 export const simMode: Ref<UnwrapRef<boolean>> = ref(false)
 
-function onSimModeChange(simMode: boolean) {
+function onSimModeChange(simMode: boolean): void {
     ens.value.validate()
     if (simMode) {
         initialNet = cloneDeep(new ENS(
