@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {EventHandlers, Layers, VNetworkGraph} from "v-network-graph";
+import {EventHandlers, Layers, VNetworkGraph, VNetworkGraphInstance} from "v-network-graph";
 import {Place, Transition} from "@/types";
 import {useENS} from "@/repository"
 import {ElNotification} from 'element-plus'
@@ -7,8 +7,8 @@ import {fireTransitionInENS, simMode, toggleSimMode} from "@/sim";
 import {configs} from "@/vnet_configs";
 import {ref} from "vue";
 import {
-  DATA_TAB_NAME,
   FLOW_RELATION_TAB_NAME,
+  IMPORT_EXPORT_TAB_NAME,
   PLACES_TAB_NAME,
   SIMULATION_TAB_NAME,
   TRANSITIONS_TAB_NAME
@@ -117,6 +117,20 @@ function exportJson() {
   link.click()
   URL.revokeObjectURL(link.href)
 }
+
+// Export as SVG
+const graph = ref<VNetworkGraphInstance>()
+
+function exportSvg() {
+  if (!graph.value) return
+  const text = graph.value?.getAsSvg()
+  const url = URL.createObjectURL(new Blob([text], {type: "octet/stream"}))
+  const a = document.createElement("a")
+  a.href = url
+  a.download = "network-graph.svg" // filename to download
+  a.click()
+  window.URL.revokeObjectURL(url)
+}
 </script>
 
 <template>
@@ -156,7 +170,10 @@ function exportJson() {
             Toggle Simulation mode
           </el-button>
         </el-tab-pane>
-        <el-tab-pane label="Import/Export" :name="DATA_TAB_NAME" :disabled="simMode">
+        <el-tab-pane label="Import/Export" :name="IMPORT_EXPORT_TAB_NAME" :disabled="simMode">
+          <el-button type="primary" plain @click="exportSvg">
+            Export network as SVG
+          </el-button>
           <el-button type="primary" plain @click="exportJson">
             Export network as JSON
           </el-button>
@@ -179,6 +196,7 @@ function exportJson() {
       Edit the network or its places, transitions and flow relations.
     </el-alert>
     <v-network-graph
+        ref="graph"
         v-model:selected-nodes="selectedNodes.value"
         v-model:selected-edges="selectedFlowRelations.value"
         :nodes="nodes"
