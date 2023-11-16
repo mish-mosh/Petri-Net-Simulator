@@ -14,9 +14,14 @@ export const configs =
                 normal: {
                     type: (node: Place | Transition) => node.shape,
                     color: (node: Place | Transition) => {
+                        if (!simMode.value) {
+                            return "#ffffff"
+                        }
                         if (node instanceof Transition) {
                             if (ens.value.transitionIsActive(node)) {
                                 return "#07ff8f"
+                            } else {
+                                return "#f56c6c"
                             }
                         }
                         return "#ffffff"
@@ -47,7 +52,7 @@ export const configs =
             view: {
                 autoPanAndZoomOnLoad: "fit-content",
                 grid: {
-                    visible: true,
+                    visible: false,
                 },
                 layoutHandler: new ForceLayout({
                     positionFixedByDrag: false,
@@ -68,8 +73,6 @@ export const configs =
     )
 
 watch(simMode, value => {
-    // @ts-ignore
-    configs.view.grid.visible = !simMode.value
     // @ts-ignore
     configs.node.selectable = !simMode.value
     // @ts-ignore
