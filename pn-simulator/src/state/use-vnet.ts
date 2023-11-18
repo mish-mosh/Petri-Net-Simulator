@@ -5,7 +5,7 @@ import {useENS} from "@/state/use-ens";
 import {computed, reactive, ref, watch} from "vue";
 import {fireTransitionInENS, simMode} from "@/simulation";
 import {FLOW_RELATION_TAB_NAME, PLACES_TAB_NAME, TRANSITIONS_TAB_NAME} from "@/consts";
-import {activeTabName} from "@/state/use-controll-bar";
+import {activeTabName} from "@/state/use-control-bar";
 
 const {
     ens,
@@ -95,8 +95,11 @@ Event handlers
 export const eventHandlers: EventHandlers = {
     "node:click": ({node}) => {
         if (nodes.value[node] instanceof Transition) {
-            fireTransitionInENS(ens.value, ens.value.transitions[node])
-            activeTabName.value = TRANSITIONS_TAB_NAME
+            if (simMode) {
+                fireTransitionInENS(ens.value, ens.value.transitions[node])
+            } else {
+                activeTabName.value = TRANSITIONS_TAB_NAME
+            }
         }
         if (nodes.value[node] instanceof Place) {
             activeTabName.value = PLACES_TAB_NAME

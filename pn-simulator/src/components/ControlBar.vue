@@ -13,7 +13,7 @@ import {
 } from "@/consts";
 import {exportENStoJSONBlob, loadENSFromJSONFile} from "@/json-adapter";
 import {simMode, toggleSimMode} from "@/simulation";
-import {activeTabName} from "@/state/use-controll-bar";
+import {activeTabName} from "@/state/use-control-bar";
 
 const {
   selectedNodes,

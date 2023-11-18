@@ -95,17 +95,12 @@ function toggleTokenForSelectedPlaces(): void {
         (nodes[placeId] as Place).hasToken = !(nodes[placeId] as Place).hasToken
     })
 }
-
-function filterNodesByClass<N extends BaseNode>(
-    nodes: BaseNodes, TheClass: Class<N>
-): Record<string, N> {
-    return filterRecordOnKeys(nodes,
-        (nodeId: string) => nodes[nodeId] instanceof TheClass
-    )
-}
-
-const getPlaces: () => Places = () => filterNodesByClass(nodes, Place)
-const getTransitions: () => Transitions = () => filterNodesByClass(nodes, Transition)
+const getPlaces: () => Places = () => filterRecordOnKeys(nodes,
+    (nodeId: string) => nodes[nodeId] instanceof Place
+)
+const getTransitions: () => Transitions = () => filterRecordOnKeys(
+    nodes,
+    (nodeId: string) => nodes[nodeId] instanceof Transition)
 
 function loadENS(ens: ENS): void {
     const newNodes = Object.assign({}, ens.places, ens.transitions)
