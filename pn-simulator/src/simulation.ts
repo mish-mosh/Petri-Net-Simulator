@@ -3,7 +3,7 @@ import {cloneDeep} from "lodash";
 import {useENS} from "@/state/use-ens";
 import {ElNotification} from "element-plus/es";
 import {Ref, ref, UnwrapRef, watch} from "vue";
-import {configs} from "@/vnet";
+import {configs} from "@/state/use-vnet";
 
 const {
     ens,

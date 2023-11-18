@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {VNetworkGraph} from "v-network-graph";
 import {useENS} from "@/state/use-ens"
-import {configs, eventHandlers, layers, useGraph} from "@/vnet";
+import {configs, eventHandlers, layers, useGraph} from "@/state/use-vnet";
 import ControlBar from "@/components/ControlBar.vue";
 import ExplanationBar from "@/components/ExplanationBar.vue";
 

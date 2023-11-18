@@ -83,30 +83,6 @@ class ENS {
         return Object.values(this.getActiveTransitions()).includes(transition)
     }
 
-    prePlace(place: Place): Transitions {
-        const prePlaceIds: string[] = Object.values(this.flowRelations)
-            .filter((fl: FlowRelation) => {
-                return Object.keys(this.places).includes(fl.target)
-                    && this.places[fl.target].name == place.name
-            })
-            .map((fl: FlowRelation) => fl.source)
-        return filterRecordOnKeys(this.transitions,
-            (nodeId: string) => prePlaceIds.includes(nodeId)
-        )
-    }
-
-    postPlace(place: Place): Transitions {
-        const postPlaceIds: string[] = Object.values(this.flowRelations)
-            .filter((fl: FlowRelation) => {
-                return Object.keys(this.places).includes(fl.source)
-                    && this.places[fl.source].name == place.name
-            })
-            .map((fl: FlowRelation) => fl.target)
-        return filterRecordOnKeys(this.transitions,
-            (nodeId: string) => postPlaceIds.includes(nodeId)
-        )
-    }
-
     preTransition(transition: Transition): Places {
         const preTransitionIds: string[] = Object.values(this.flowRelations)
             .filter((fl: FlowRelation) => {

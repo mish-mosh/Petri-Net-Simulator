@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useENS} from "@/state/use-ens"
 import {ElNotification} from 'element-plus'
-import {useGraph} from "@/vnet";
+import {useGraph} from "@/state/use-vnet";
 import {ref} from "vue";
 import {
   CANVAS_TAB_NAME,
