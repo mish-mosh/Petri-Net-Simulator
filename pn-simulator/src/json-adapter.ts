@@ -1,5 +1,5 @@
-import {ENS, FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/types";
-import {useENS} from "@/repository"
+import {ENS, FlowRelation, FlowRelations, Place, Places, Transition, Transitions} from "@/domain";
+import {useENS} from "@/state/use-ens"
 
 const {ens, loadENS} = useENS()
 

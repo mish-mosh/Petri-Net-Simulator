@@ -1,8 +1,9 @@
-import {ENS, Places, Transition} from "@/types";
+import {ENS, Places, Transition} from "@/domain";
 import {cloneDeep} from "lodash";
-import {useENS} from "@/repository";
+import {useENS} from "@/state/use-ens";
 import {ElNotification} from "element-plus/es";
 import {Ref, ref, UnwrapRef, watch} from "vue";
+import {configs} from "@/vnet";
 
 const {
     ens,
@@ -16,19 +17,6 @@ let initialNet: ENS = cloneDeep(new ENS(
 ))
 
 export const simMode: Ref<UnwrapRef<boolean>> = ref(false)
-
-function onSimModeChange(simMode: boolean): void {
-    ens.value.validate()
-    if (simMode) {
-        initialNet = cloneDeep(new ENS(
-            ens.value.places,
-            ens.value.transitions,
-            ens.value.flowRelations,
-        ))
-    } else {
-        loadENS(initialNet)
-    }
-}
 
 export function toggleSimMode(): void {
     simMode.value = !simMode.value
@@ -63,6 +51,19 @@ function fireENS(ens: ENS, transition: Transition): ENS {
     )
 }
 
+function onSimModeChange(value: boolean): void {
+    ens.value.validate()
+    if (value) {
+        initialNet = cloneDeep(new ENS(
+            ens.value.places,
+            ens.value.transitions,
+            ens.value.flowRelations,
+        ))
+    } else {
+        loadENS(initialNet)
+    }
+}
+
 watch(simMode, (value: boolean) => {
     try {
         onSimModeChange(value);
@@ -75,4 +76,3 @@ watch(simMode, (value: boolean) => {
         })
     }
 })
-

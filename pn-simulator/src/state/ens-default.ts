@@ -1,5 +1,5 @@
 import {Layouts} from "v-network-graph";
-import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/types";
+import {BaseNodes, FlowRelation, FlowRelations, Place, Transition} from "@/domain";
 
 const nodes: BaseNodes = {
     p1: new Place("p1", true),

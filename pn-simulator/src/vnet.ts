@@ -1,11 +1,18 @@
-import {defineConfigs, Edge} from "v-network-graph";
-import {Place, Transition} from "@/types";
+import {defineConfigs, Edge, EventHandlers, Layers, VNetworkGraphInstance} from "v-network-graph";
+import {Place, Transition} from "@/domain";
 import {ForceEdgeDatum, ForceLayout, ForceNodeDatum} from "v-network-graph/lib/force-layout";
-import {useENS} from "@/repository";
-import {reactive, watch} from "vue";
-import {simMode} from "@/sim";
+import {useENS} from "@/state/use-ens";
+import {computed, reactive, ref, watch} from "vue";
+import {fireTransitionInENS, simMode} from "@/simulation";
+import {FLOW_RELATION_TAB_NAME, PLACES_TAB_NAME, TRANSITIONS_TAB_NAME} from "@/consts";
+import {activeTabName} from "@/state/use-controll-bar";
 
-const {ens} = useENS()
+const {
+    ens,
+    nodes,
+    selectedPlaces,
+    selectedTransitions,
+} = useENS()
 
 export const configs =
     reactive(defineConfigs<Place | Transition, Edge>({
@@ -72,9 +79,50 @@ export const configs =
         })
     )
 
-watch(simMode, value => {
+const graph = ref<VNetworkGraphInstance>()
+export const useGraph = () => graph
+
+// Additional layers
+export const layers: Layers = {
+    // The token display layer
+    token: "nodes",
+}
+
+/*
+Event handlers
+ */
+
+export const eventHandlers: EventHandlers = {
+    "node:click": ({node}) => {
+        if (nodes.value[node] instanceof Transition) {
+            fireTransitionInENS(ens.value, ens.value.transitions[node])
+            activeTabName.value = TRANSITIONS_TAB_NAME
+        }
+        if (nodes.value[node] instanceof Place) {
+            activeTabName.value = PLACES_TAB_NAME
+        }
+    },
+// @ts-ignore
+    "node:select": ({node}) => {
+        if (selectedPlaces.value.length == 1 && selectedTransitions.value.length == 1) {
+            activeTabName.value = FLOW_RELATION_TAB_NAME
+            return
+        }
+        if (nodes.value[node] instanceof Transition) {
+            activeTabName.value = TRANSITIONS_TAB_NAME
+        }
+        if (nodes.value[node] instanceof Place) {
+            activeTabName.value = PLACES_TAB_NAME
+        }
+    },
+    "edge:select": () => {
+        activeTabName.value = FLOW_RELATION_TAB_NAME
+    }
+}
+
+watch(simMode, value=> {
     // @ts-ignore
-    configs.node.selectable = !simMode.value
+    configs.node.selectable = !value
     // @ts-ignore
-    configs.edge.selectable = !simMode.value
+    configs.edge.selectable = !value
 })

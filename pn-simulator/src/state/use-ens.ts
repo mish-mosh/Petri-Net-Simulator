@@ -9,9 +9,9 @@ import {
     Places,
     Transition,
     Transitions
-} from "@/types";
+} from "@/domain";
 import {computed, reactive, ref} from "vue";
-import data from "@/data/ens-default";
+import data from "@/state/ens-default";
 import {NodePositions} from "v-network-graph/lib/common/types";
 import {filterRecordOnKeys} from "@/utils";
 
