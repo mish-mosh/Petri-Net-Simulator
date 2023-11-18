@@ -8,10 +8,10 @@ import {configs} from "@/vnet_configs";
 import {ref} from "vue";
 import {
   FLOW_RELATION_TAB_NAME,
-  IMPORT_EXPORT_TAB_NAME,
+  DATA_TAB_NAME,
   PLACES_TAB_NAME,
   SIMULATION_TAB_NAME,
-  TRANSITIONS_TAB_NAME
+  TRANSITIONS_TAB_NAME, CANVAS_TAB_NAME
 } from "@/consts";
 import {exportENStoJSONBlob, loadENSFromJSONFile} from "@/JSONAdapter";
 
@@ -170,12 +170,9 @@ function exportSvg() {
             Toggle Simulation mode
           </el-button>
         </el-tab-pane>
-        <el-tab-pane label="Import/Export" :name="IMPORT_EXPORT_TAB_NAME" :disabled="simMode">
-          <el-button type="primary" plain @click="exportSvg">
-            Export network as SVG
-          </el-button>
+        <el-tab-pane label="Data" :name="DATA_TAB_NAME" :disabled="simMode">
           <el-button type="primary" plain @click="exportJson">
-            Export network as JSON
+            Export as JSON
           </el-button>
           <el-button type="primary" plain @click="triggerFileUpload">Load from JSON</el-button>
           <input
@@ -184,6 +181,11 @@ function exportSvg() {
               ref="fileInput"
               accept="application/json"
               @change="loadFromJSON"/>
+        </el-tab-pane>
+        <el-tab-pane label="Canvas" :name="CANVAS_TAB_NAME">
+          <el-button type="primary" plain @click="exportSvg">
+            Export as SVG
+          </el-button>
         </el-tab-pane>
       </el-tabs>
     </template>

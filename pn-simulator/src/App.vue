@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header height="50px">
-      <h1>Petri-Net Simulator</h1>
+      <h1>A Petri-Net Simulator</h1>
     </el-header>
     <el-main>
       <ENS/>
