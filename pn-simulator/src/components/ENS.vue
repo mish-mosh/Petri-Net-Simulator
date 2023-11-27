@@ -20,8 +20,8 @@ const graph = useGraph();
 
 <template>
   <el-card>
-    <ControlBar/>
-    <ExplanationBar/>
+    <control-bar/>
+    <explanation-bar/>
     <v-network-graph
         ref="graph"
         v-model:selected-nodes="selectedNodes.value"
