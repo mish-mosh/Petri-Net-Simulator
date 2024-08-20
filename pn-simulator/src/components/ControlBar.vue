@@ -61,8 +61,10 @@ function triggerFileUpload() {
 }
 
 function loadFromJSON(event: Event): void {
-  const ensJSONFile = event.target?.files[0]
-  loadENSFromJSONFile(ensJSONFile);
+  const ensJSONFile = (event.target as HTMLInputElement)?.files?.[0];
+  if (ensJSONFile) {
+    loadENSFromJSONFile(ensJSONFile);
+  }
 }
 
 function exportJson() {

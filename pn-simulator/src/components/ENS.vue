@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {VNetworkGraph} from "v-network-graph";
+import {Configs, VNetworkGraph} from "v-network-graph";
 import {useENS} from "@/state/use-ens"
 import {configs, eventHandlers, layers, useGraph} from "@/state/use-vnet";
 import ControlBar from "@/components/ControlBar.vue";
@@ -28,7 +28,7 @@ const graph = useGraph();
         v-model:selected-edges="selectedFlowRelations.value"
         :nodes="nodes"
         :edges="ens.flowRelations"
-        :configs="configs"
+        :configs="(configs as Configs)"
         :layers="layers"
         :layouts="layouts"
         :event-handlers="eventHandlers"
