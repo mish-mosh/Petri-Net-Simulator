@@ -1,26 +1,28 @@
-<template>
-  <el-container>
-    <el-header height="50px">
-      <h1>A Petri-Net Simulator</h1>
-    </el-header>
-    <el-main>
-      <ENS/>
-    </el-main>
-  </el-container>
-</template>
-
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 import ENS from "@/components/ENS.vue";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 
 @Options({
   components: {
     ENS,
+    HeaderComponent,
   },
 })
 export default class App extends Vue {
 }
 </script>
+
+<template>
+  <el-container>
+    <el-header height="50px">
+      <HeaderComponent />
+    </el-header>
+    <el-main>
+      <ENS />
+    </el-main>
+  </el-container>
+</template>
 
 <style>
 #app {
