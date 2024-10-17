@@ -10,7 +10,7 @@ import { openDialog, dialogIsOpen } from '@/state/use-info-dialog';
         </el-col>
         <el-col :span="1">
             <h1>
-                <el-button type="info" circle @click="openDialog">
+                <el-button type="info" circle @click="openDialog" data-test="open-dialog-btn">
                     <el-icon>
                         <InfoFilled />
                     </el-icon>

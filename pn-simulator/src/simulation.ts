@@ -1,7 +1,7 @@
 import {ENS, Places, Transition} from "@/domain";
 import {cloneDeep} from "lodash";
 import {useENS} from "@/state/use-ens";
-import {ElNotification} from "element-plus/es";
+import {ElNotification} from "element-plus";
 import {Ref, ref, UnwrapRef, watch} from "vue";
 import {configs} from "@/state/use-vnet";
 
