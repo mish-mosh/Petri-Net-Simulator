@@ -1,0 +1,15 @@
+default:
+  image: node:22.1.0-alpine
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - npm install
+    - npm test
