@@ -6,6 +6,8 @@ The following clip shows simulating a [proudcer-consumer-problem with one token]
 
 ![](./docs/assets/EN-producer-consumer.mp4)
 
+Try it out at: [https://mish-mosh.gitlab.io/petri-net-simulator/](https://mish-mosh.gitlab.io/petri-net-simulator/)
+
 ## Features
 - Add places, transitions, and arcs (flow relations) to create single-tokened elementary nets (edit mode)
 - Simulate its firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire
@@ -17,26 +19,17 @@ I built this simulator while enrolled in an advanced mathematics course at unive
 
 I recognized the need for a simulator to better understand the theory behind this topic and hope that others will benefit from it as well.
 
-## Usage
+## Installation
 1. Download the repo:
    ```
    git clone https://gitlab.com/mish-mosh/petri-net-simulator.git
    ```
-2. Install project:
+2. Setup project:
    ```
    npm install
    ```
-3. run project:
-   ```
-   npm run serve
-   ```
 
 ## Development
-### Project setup
-```
-npm install
-```
-
 #### Lints and fixes files
 ```
 npm run lint
