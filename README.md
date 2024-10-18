@@ -12,7 +12,7 @@ Try it out at: [https://mish-mosh.gitlab.io/petri-net-simulator/](https://mish-m
 
 ## Features
 - Add places, transitions, and arcs (flow relations) to create single-tokened elementary nets (edit mode)
-- Simulate its firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire
+- Simulate the firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire
 - Import/Export the data of your net
 - Export a snapshot of your net as SVG
 

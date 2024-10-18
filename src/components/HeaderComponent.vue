@@ -48,7 +48,7 @@ import { openDialog, dialogIsOpen } from '@/state/use-info-dialog';
                     <b>With this simulator you can:</b>
                     <ul>
                         <li>Add places, transitions, and arcs (flow relations) to create single-tokened elementary nets (edit mode)</li>
-                        <li>Simulate its firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire</li>
+                        <li>Simulate the firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire</li>
                         <li>Import/Export the data of your net</li>
                         <li>Export a snapshot of your net as SVG</li>
                     </ul>
