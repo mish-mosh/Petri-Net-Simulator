@@ -7,9 +7,24 @@ default:
 
 stages:
   - test
+  - deploy
 
 test:
   stage: test
   script:
-    - npm install
+    - npm install --progress=false
     - npm test
+
+pages:
+ stage: deploy
+ script:
+  - npm install --progress=false
+  - npm run build
+  - rm -rf public
+  - mkdir public
+  - cp -r dist/* public
+ artifacts:
+  paths:
+  - public
+ only:
+  - main
