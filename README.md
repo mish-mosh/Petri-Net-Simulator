@@ -4,7 +4,9 @@ Elementary nets are special [petri-nets](https://en.wikipedia.org/wiki/Petri_net
 
 The following clip shows simulating a [proudcer-consumer-problem with one token](http://petrinet.org/#ProducerConsumer):
 
-![](https://github.com/user-attachments/assets/9839a271-0f5c-4329-a673-4031c7fdb397)
+https://github.com/user-attachments/assets/9839a271-0f5c-4329-a673-4031c7fdb397
+
+![](docs/assets/EN-producer-consumer.mp4)
 
 Try it out at: [https://mish-mosh.gitlab.io/petri-net-simulator/](https://mish-mosh.gitlab.io/petri-net-simulator/)
 
