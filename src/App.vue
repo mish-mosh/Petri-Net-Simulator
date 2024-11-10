@@ -2,11 +2,13 @@
 import { Options, Vue } from 'vue-class-component';
 import ENS from "@/components/ENS.vue";
 import HeaderComponent from "@/components/HeaderComponent.vue";
+import FooterComponent from './components/FooterComponent.vue';
 
 @Options({
   components: {
     ENS,
     HeaderComponent,
+    FooterComponent,
   },
 })
 export default class App extends Vue {
@@ -21,6 +23,9 @@ export default class App extends Vue {
     <el-main>
       <ENS />
     </el-main>
+    <el-footer height="50px">
+      <FooterComponent />
+    </el-footer>
   </el-container>
 </template>
 

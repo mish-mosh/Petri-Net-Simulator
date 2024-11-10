@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { openDialog, dialogIsOpen } from '@/state/use-info-dialog';
-
+import { dialogIsOpen, openDialog } from '@/state/use-info-dialog';
 </script>
 
 <template>
     <el-row>
-        <el-col :span="23">
+        <el-col :span="22">
             <h1>A Petri-Net Simulator</h1>
         </el-col>
         <el-col :span="1">
@@ -44,11 +43,13 @@ import { openDialog, dialogIsOpen } from '@/state/use-info-dialog';
                             token in each output place.</li>
                         <li>Repeat steps 2 and 3 until no more transitions are enabled.</li>
                     </ol>
-                    
+
                     <b>With this simulator you can:</b>
                     <ul>
-                        <li>Add places, transitions, and arcs (flow relations) to create single-tokened elementary nets (edit mode)</li>
-                        <li>Simulate the firing process of your net. Once in simulation mode, you can click on any active (green) transition to make it fire</li>
+                        <li>Add places, transitions, and arcs (flow relations) to create single-tokened elementary nets
+                            (edit mode)</li>
+                        <li>Simulate the firing process of your net. Once in simulation mode, you can click on any
+                            active (green) transition to make it fire</li>
                         <li>Import/Export the data of your net</li>
                         <li>Export a snapshot of your net as SVG</li>
                     </ul>
@@ -56,7 +57,8 @@ import { openDialog, dialogIsOpen } from '@/state/use-info-dialog';
                 </span>
             </el-dialog>
         </el-col>
-    </el-row></template>
+    </el-row>
+</template>
 
 <style>
 .wrapped-text-with-hyphens {
