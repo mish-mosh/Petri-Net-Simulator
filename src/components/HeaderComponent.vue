@@ -4,7 +4,7 @@ import { dialogIsOpen, openDialog } from '@/state/use-info-dialog';
 
 <template>
     <el-row>
-        <el-col :span="22">
+        <el-col :span="23">
             <h1>A Petri-Net Simulator</h1>
         </el-col>
         <el-col :span="1">
